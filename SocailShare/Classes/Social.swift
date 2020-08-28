@@ -29,26 +29,26 @@ public enum SocialType: Int, CustomStringConvertible {
 public struct Social {
     
     /// 平台类型
-    var type: SocialType
+    public var type: SocialType
     
     /// 展示图标
-    var icon: UIImage
+    public var icon: UIImage
     
     /// 公钥
-    var appKey: String
+    public var appKey: String
     
     /// 私钥
-    var appSecret: String
+    public var appSecret: String
     
     /// 重定向链接
-    var redirectURL: String
+    public var redirectURL: String
 
     
     /// 分享文本
     /// - Parameters:
     ///   - text: 文本
     ///   - finished: 完成回调
-    func shareText(_ text: String, finished: ((_ error: Error?) -> Void)?) {
+    public func shareText(_ text: String, finished: ((_ error: Error?) -> Void)?) {
         guard prepare(exception: finished) else {return}
         debugPrint("share \(text) to \(self.type)")
         
@@ -58,7 +58,7 @@ public struct Social {
     /// - Parameters:
     ///   - image: 图片
     ///   - finished: 完成回调
-    func shareImage(_ image: UIImage, finished: ((_ error: Error?) -> Void)?) {
+    public func shareImage(_ image: UIImage, finished: ((_ error: Error?) -> Void)?) {
         guard prepare(exception: finished) else {return}
         debugPrint("share \(image) to \(self.type)")
     }
@@ -69,20 +69,28 @@ public struct Social {
     ///   - description: 描述
     ///   - thumb: 缩略图
     ///   - finished: 完成回调
-    func shareWeb(title: String, description: String, thumb: UIImage, url: String, finished: ((_ error: Error?) -> Void)?) {
+    public func shareWeb(title: String, description: String, thumb: UIImage, url: String, finished: ((_ error: Error?) -> Void)?) {
         guard prepare(exception: finished) else {return}
         debugPrint("share \(url) to \(self.type)")
     }
     
     /// 信息注册
-    func register() {
+    public func register() {
         
     }
     
     /// 检测是否安装
     /// - Returns: 是否安装
-    func isInstall() -> Bool {
+    public func isInstall() -> Bool {
         return true
+    }
+    
+    public init(type: SocialType, icon: UIImage, appKey: String, appSecret: String, redirectURL: String) {
+        self.type = type
+        self.icon = icon
+        self.appKey = appKey
+        self.appSecret = appSecret
+        self.redirectURL = redirectURL
     }
     
 }

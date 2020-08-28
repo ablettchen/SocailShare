@@ -12,10 +12,11 @@ import ATCategories
 
 public class ShareView: UIView {
     
-    func show(in view: UIView? = nil, items: [(name: String, icon: UIImage?)], action: ((_ index: Int) -> Void)?) {
+    public func show(in view: UIView? = nil, items: [(name: String, icon: UIImage?)], action: ((_ index: Int) -> Void)?) {
         datas = items
         didSelected = action
-        show(in: view ?? UIViewController.at_top().view)
+        
+        show(in: view ?? UIApplication.shared.keyWindow!)
     }
     
     private var didSelected: ((Int) -> Void)?
@@ -224,8 +225,10 @@ private extension ShareView {
         )
         UIView.animate(withDuration: 0.25, delay: 0, options: opitons, animations: {[weak self] in
             self?.backgroundView.alpha = 0.001
-            self?.snp.makeConstraints { (make) in
-                make.top.equalTo(self!.superview!.snp.bottom)
+            self?.snp.remakeConstraints { (make) in
+                make.width.equalToSuperview()
+                make.height.equalTo(54 + 120 + 54 + (UIDevice.current.isiPhoneX() ? 34 : 0))
+                make.top.equalTo(self!.backgroundView.snp.bottom)
             }
             self?.superview?.layoutIfNeeded()
         }) { [weak self] (finished) in

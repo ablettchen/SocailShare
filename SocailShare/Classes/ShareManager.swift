@@ -12,20 +12,20 @@ import UIKit
 public class ShareManager {
 
     /// 单例
-    static let shared = ShareManager()
+    public static let shared = ShareManager()
     
     /// 是否验证平台已安装
-    var isOnlyShowInstalled = false
+    public var isOnlyShowInstalled = false
     
     /// 平台信息预设
-    var socails: [Social] = []
+    public var socails: [Social] = []
 
     /// 分享
     /// - Parameters:
     ///   - resource: 资源
     ///   - socail: 平台
     ///   - finished: 完成回调
-    func share(resource: Any, type: SocialType, finished: ((_ error: Error?) -> Void)?) {
+    public func share(resource: Any, type: SocialType, finished: ((_ error: Error?) -> Void)?) {
         if let socail = ShareManager.presetValidate(type: type, exception: finished) {
             switch resource {
             case let text as String:
@@ -47,7 +47,7 @@ public class ShareManager {
     ///   - resource: 资源
     ///   - types: 平台
     ///   - finished: 完成回到
-    func show(resource: Any, socails types: [SocialType]? = nil, finished: ((_ error: Error?, _ socail: Social?) -> Void)?) {
+    public func show(resource: Any, socails types: [SocialType]? = nil, finished: ((_ error: Error?, _ socail: Social?) -> Void)?) {
         let socails = ShareManager.installValidate(types: types)
         let items = ShareManager.items(socails: socails)
         let alert = ShareView()
@@ -64,7 +64,7 @@ public class ShareManager {
     }
     
     /// 注册平台信息
-    func register() {
+    public func register() {
         let socails = ShareManager.shared.socails
         for socail in socails {
             socail.register()
