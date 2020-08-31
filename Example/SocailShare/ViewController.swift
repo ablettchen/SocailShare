@@ -48,7 +48,6 @@ class ViewController: UIViewController {
         ShareManager.shared.socails.append(Social(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: ""))
         ShareManager.shared.socails.append(Social(type: .QQ, icon: UIImage(named: qqNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: ""))
         ShareManager.shared.socails.append(Social(type: .QZone, icon: UIImage(named: qZoneNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: ""))
-        ShareManager.shared.register()
     }
     
     override func viewDidLayoutSubviews() {
@@ -94,7 +93,7 @@ extension ViewController {
         switch index {
         case 0:
 
-            let web = ResourceWeb(title: "hello", description: "desc", thumb: UIImage(named: "social_wechat")!, url: "https://www.baidu.com")
+            let web = ResourceWeb(title: "hello", description: "desc", thumb: UIImage(named: "social_wechat")!, url: "https://github.com/ablettchen")
             ShareManager.shared.show(resource: web) { (error, socail) in
                 guard error == nil else {
                     let text = "\(error?.localizedDescription ?? "error")"
