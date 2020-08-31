@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'SocailShare'
   s.version          = '0.0.1'
-  s.summary          = 'socail share'
+  s.summary          = 'Swift 社会化分享工具'
   s.description      = <<-DESC
   TODO: Add long description of the pod here.
                          DESC
