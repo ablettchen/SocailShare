@@ -7,9 +7,10 @@
 //
 
 import UIKit
+import Foundation
 
 /// 社会化分享
-public class ShareManager {
+public class ShareManager: NSObject {
 
     /// 单例
     public static let shared = ShareManager()
@@ -67,8 +68,48 @@ public class ShareManager {
     public func register() {
         let socails = ShareManager.shared.socails
         for socail in socails {
-            socail.register()
+            socail.register(delegate: self)
         }
+    }
+    
+    public func handle(continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        return WXApi.handleOpenUniversalLink(userActivity, delegate: self)
+    } 
+    
+    public func handle(open url: URL) -> Bool {
+        let wechatShare = url.host == "platformId=wechat" && url.scheme == ShareManager.socail(.wechat)?.appKey
+        let qqShare = url.host == "response_from_qq"
+        if wechatShare {
+            WXApi.handleOpen(url, delegate: self)
+        }else if qqShare {
+            if TencentOAuth.canHandleUniversalLink(url) {TencentOAuth.handleUniversalLink(url)}
+            else if TencentOAuth.canHandleOpen(url) {TencentOAuth.handleOpen(url)}
+        }
+        return false
+    }
+}
+
+extension ShareManager: WXApiDelegate {
+    
+    public func onReq(_ req: BaseReq) {
+        
+    }
+    
+    public func onResp(_ resp: BaseResp) {
+        
+    }
+}
+
+extension ShareManager: TencentSessionDelegate {
+
+    public func tencentDidLogin() {}
+
+    public func tencentDidNotLogin(_ cancelled: Bool) {}
+
+    public func tencentDidNotNetWork() {}
+
+    public func responseDidReceived(_ response: APIResponse!, forMessage message: String!) {
+        debugPrint("\(message)")
     }
 }
 
@@ -151,19 +192,25 @@ private extension ShareManager {
 
 
 
-
 /// 网页
 public struct ResourceWeb {
     
     /// 标题
-    var title: String
+    public var title: String
     
     /// 描述
-    var description: String
+    public var description: String
     
     /// 缩略图
-    var thumb: UIImage
+    public var thumb: UIImage
     
     /// 链接
-    var url: String
+    public var url: String
+    
+    public init(title: String, description: String, thumb: UIImage, url: String) {
+        self.title = title
+        self.description = description
+        self.thumb = thumb
+        self.url = url
+    }
 }

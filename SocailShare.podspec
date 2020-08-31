@@ -20,16 +20,19 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/ablettchen/SocailShare.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/ablettchen'
   s.platform         = :ios, "9.0"
-  s.source_files     = 'SocailShare/Classes/**/*.{h,m,swift}'
+  s.source_files     = 'SocailShare/Classes/**/*.{h,swift}'
   s.requires_arc     = true
   s.swift_version   = '5.1'
   
-  # 微信SDK需要设置如下
+
   s.vendored_libraries   = "SocailShare/Classes/**/*.{a}"
-  s.framework            = "WebKit"
+  s.vendored_frameworks  = 'SocailShare/Classes/**/*.framework'
+  s.framework            = "WebKit", "Security", "SystemConfiguration", "CoreTelephony"
   s.static_framework     = true
   s.user_target_xcconfig = {'OTHER_LDFLAGS' => '-lstdc++ -ObjC'}
-  
+  s.libraries = 'z', 'sqlite3', 'stdc++'
+
+
   s.dependency 'SnapKit'
   s.dependency 'ATCategories'
 

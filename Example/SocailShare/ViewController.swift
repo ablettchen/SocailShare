@@ -9,6 +9,18 @@
 import UIKit
 import SnapKit
 import SocailShare
+import ATToast
+
+
+let wechatKey = ""
+let wechatSecret = ""
+let qqKey = ""
+let qqSecret = ""
+
+let wechatNamed = "social_wechat"
+let wechatTlNamed = "social_wechattimeline"
+let qqNamed = "social_qq"
+let qZoneNamed = "social_qzone"
 
 class ViewController: UIViewController {
     
@@ -32,10 +44,11 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         view.addSubview(tableView)
                 
-        ShareManager.shared.socails.append(Social(type: .wechat, icon: UIImage(named: "social_wechat")!, appKey: "", appSecret: "", redirectURL: ""))
-        ShareManager.shared.socails.append(Social(type: .wechatTimeline, icon: UIImage(named: "social_wechattimeline")!, appKey: "", appSecret: "", redirectURL: ""))
-        ShareManager.shared.socails.append(Social(type: .QQ, icon: UIImage(named: "social_qq")!, appKey: "", appSecret: "", redirectURL: ""))
-        ShareManager.shared.socails.append(Social(type: .QZone, icon: UIImage(named: "social_qzone")!, appKey: "", appSecret: "", redirectURL: ""))
+        ShareManager.shared.socails.append(Social(type: .wechat, icon: UIImage(named: wechatNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: ""))
+        ShareManager.shared.socails.append(Social(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: ""))
+        ShareManager.shared.socails.append(Social(type: .QQ, icon: UIImage(named: qqNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: ""))
+        ShareManager.shared.socails.append(Social(type: .QZone, icon: UIImage(named: qZoneNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: ""))
+        ShareManager.shared.register()
     }
     
     override func viewDidLayoutSubviews() {
@@ -81,9 +94,12 @@ extension ViewController {
         switch index {
         case 0:
 
-            ShareManager.shared.show(resource: "hello") { (error, socail) in
+            let web = ResourceWeb(title: "hello", description: "desc", thumb: UIImage(named: "social_wechat")!, url: "https://www.baidu.com")
+            ShareManager.shared.show(resource: web) { (error, socail) in
                 guard error == nil else {
-                    debugPrint("\(error?.localizedDescription ?? "error")")
+                    let text = "\(error?.localizedDescription ?? "error")"
+                    debugPrint(text)
+                    UIApplication.shared.keyWindow!.showToast(text)
                     return
                 }
                 debugPrint("\(socail?.type.description ?? "") shared successfully")
