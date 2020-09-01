@@ -20,6 +20,8 @@ public class ShareManager: NSObject {
     
     /// 平台信息预设
     public var socails: [Social] = []
+    
+    private var finished: ((_ error: Error?) -> Void)?
 
     /// 分享
     /// - Parameters:
@@ -28,6 +30,7 @@ public class ShareManager: NSObject {
     ///   - finished: 完成回调
     public func share(resource: Any, type: SocialType, finished: ((_ error: Error?) -> Void)?) {
         if let socail = ShareManager.presetValidate(type: type, exception: finished) {
+            self.finished = finished
             switch resource {
             case let text as String:
                 socail.shareText(text, finished: finished)
@@ -96,7 +99,7 @@ extension ShareManager: WXApiDelegate {
     }
     
     public func onResp(_ resp: BaseResp) {
-        
+        finished?(nil)
     }
 }
 
@@ -168,7 +171,6 @@ private extension ShareManager {
         }
         return socail
     }
-    
     
     /// 安装信息校验
     /// - Parameter types: 平台类型

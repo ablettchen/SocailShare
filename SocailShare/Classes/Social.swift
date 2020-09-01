@@ -48,7 +48,12 @@ public struct Social {
     ///   - text: 文本
     ///   - finished: 完成回调
     public func shareText(_ text: String, finished: ((_ error: Error?) -> Void)?) {
-        guard prepare(exception: finished) else {return}
+        
+        if let error = prepare() {
+            finished?(error)
+            return
+        }
+        
         debugPrint("share \(text) to \(self.type)")
         
         switch type {
@@ -61,7 +66,10 @@ public struct Social {
             req.text = text
             req.scene = scene
             WXApi.send(req) { (success) in
-                debugPrint("\(success)")
+                guard success else {
+                    finished?(NSError.init(domain: "Social", code: 10001, userInfo: [NSLocalizedDescriptionKey : "error:\(success)"]))
+                    return
+                }
             }
                 
         case .QQ, .QZone:
@@ -70,7 +78,7 @@ public struct Social {
             let req = SendMessageToQQReq.init(content: textObjc)
             var code: QQApiSendResultCode = .EQQAPISENDSUCESS;
             if type == .QQ {
-                code = QQApiInterface.sendReq(toQZone: req)
+                code = QQApiInterface.send(req)
             }else if type == .QZone {
                 code = QQApiInterface.sendReq(toQZone: req)
             }
@@ -86,10 +94,20 @@ public struct Social {
     ///   - image: 图片
     ///   - finished: 完成回调
     public func shareImage(_ image: UIImage, finished: ((_ error: Error?) -> Void)?) {
-        guard prepare(exception: finished) else {return}
+        
+        if let error = prepare() {
+            finished?(error)
+            return
+        }
+        
         debugPrint("share \(image) to \(self.type)")
         
-        let data = image.jpegData(compressionQuality: 1.0)!
+        if let error = validate(image: image) {
+            finished?(error)
+            return
+        }
+        
+        let imageData = image.jpegData(compressionQuality: 1.0)!
         
         switch type {
         case .wechat, .wechatTimeline:
@@ -97,10 +115,9 @@ public struct Social {
             let scene: Int32 = Int32((type == .wechat) ? WXSceneSession.rawValue : WXSceneTimeline.rawValue)
             
             let imageObjc = WXImageObject()
-            imageObjc.imageData = data
+            imageObjc.imageData = imageData
             
             let message = WXMediaMessage()
-            message.thumbData = data
             message.mediaObject = imageObjc
             
             let req = SendMessageToWXReq()
@@ -109,16 +126,19 @@ public struct Social {
             req.scene = scene
             
             WXApi.send(req) { (success) in
-                debugPrint("\(success)")
+                guard success else {
+                    finished?(NSError.init(domain: "Social", code: 10001, userInfo: [NSLocalizedDescriptionKey : "error:\(success)"]))
+                    return
+                }
             }
-                
+
         case .QQ, .QZone:
             
-            let imageObjc = QQApiImageObject.init(data: data, previewImageData: data, title: "", description: "")
+            let imageObjc = QQApiImageObject.init(data: imageData, previewImageData: nil, title: "", description: "")
             let req = SendMessageToQQReq.init(content: imageObjc)
             var code: QQApiSendResultCode = .EQQAPISENDSUCESS;
             if type == .QQ {
-                code = QQApiInterface.sendReq(toQZone: req)
+                code = QQApiInterface.send(req)
             }else if type == .QZone {
                 code = QQApiInterface.sendReq(toQZone: req)
             }
@@ -136,13 +156,25 @@ public struct Social {
     ///   - thumb: 缩略图
     ///   - finished: 完成回调
     public func shareWeb(title: String, description: String, thumb: UIImage, url: String, finished: ((_ error: Error?) -> Void)?) {
-        guard prepare(exception: finished) else {return}
+        
+        if let error = prepare() {
+            finished?(error)
+            return
+        }
+        
         debugPrint("share \(url) to \(self.type)")
         
-        let data = thumb.jpegData(compressionQuality: 1.0)!
+        if let error = validate(image: thumb, isThumb: true) {
+            finished?(error)
+            return
+        }
+        
+        let thumbData = thumb.jpegData(compressionQuality: 1.0)!
         
         switch type {
         case .wechat, .wechatTimeline:
+            
+            let scene: Int32 = Int32((type == .wechat) ? WXSceneSession.rawValue : WXSceneTimeline.rawValue)
             
             let webObjc = WXWebpageObject()
             webObjc.webpageUrl = url
@@ -150,24 +182,28 @@ public struct Social {
             let message = WXMediaMessage()
             message.title = title
             message.description = description
-            message.thumbData = data
+            message.thumbData = thumbData
             message.mediaObject = webObjc
             
             let req = SendMessageToWXReq()
             req.bText = false
             req.message = message
-            req.scene = Int32(WXSceneSession.rawValue)
+            req.scene = scene
+
             WXApi.send(req) { (success) in
-                debugPrint("\(success)")
+                guard success else {
+                    finished?(NSError.init(domain: "Social", code: 10001, userInfo: [NSLocalizedDescriptionKey : "error:\(success)"]))
+                    return
+                }
             }
-                
+ 
         case .QQ, .QZone:
 
-            let webObjc = QQApiNewsObject.init(url: URL(string: url), title: title, description: description, previewImageData: data, targetContentType: .news)
+            let webObjc = QQApiNewsObject.init(url: URL(string: url), title: title, description: description, previewImageData: thumbData, targetContentType: .news)
             let req = SendMessageToQQReq.init(content: webObjc)
             var code: QQApiSendResultCode = .EQQAPISENDSUCESS;
             if type == .QQ {
-                code = QQApiInterface.sendReq(toQZone: req)
+                code = QQApiInterface.send(req)
             }else if type == .QZone {
                 code = QQApiInterface.sendReq(toQZone: req)
             }
@@ -182,10 +218,11 @@ public struct Social {
         
         switch type {
         case .wechat, .wechatTimeline:
-            WXApi.registerApp(appKey, universalLink: universalLink)
+            
+            if WXApi.registerApp(appKey, universalLink: universalLink) { debugPrint("微信注册成功") }
+            else { debugPrint("微信注册失败") }
             
         case .QQ, .QZone:
-            debugPrint(type)
             TencentOAuth.init(appId: appKey, enableUniveralLink: true, universalLink:universalLink, delegate: delegate)
         }
     }
@@ -215,9 +252,18 @@ public struct Social {
 
 private extension Social {
     
+    func validate(image: UIImage, isThumb: Bool = false) -> Error? {
+        let data = image.jpegData(compressionQuality: 1.0)!
+        let refer = (type == .wechat || type == .wechatTimeline) ? (isThumb ? 64 : 1024 * 25) : (isThumb ? 1024 : 1024 * 5)
+        guard (data.count / 1000) < refer else {
+            return NSError.init(domain: "Social", code: 10001, userInfo: [NSLocalizedDescriptionKey : isThumb ? "缩略图太大" : "图片太大"])
+        }
+        return nil
+    }
+    
     /// 准备
     /// - Parameter exception: 完成回调
-    func prepare(exception: ((_ error: Error) -> Void)?) -> Bool {
+    func prepare() -> Error? {
         
         register()
         
@@ -230,11 +276,10 @@ private extension Social {
                 name = SocialType.QQ.description
             }
             let error = NSError(domain: "Social", code: 10000, userInfo: [NSLocalizedDescriptionKey : "\(name)未安装"])
-            exception?(error)
-            return false
+            return error
         }
         
-        return true
+        return nil
     }
 }
 

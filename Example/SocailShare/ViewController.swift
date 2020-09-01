@@ -17,6 +17,9 @@ let wechatSecret = ""
 let qqKey = ""
 let qqSecret = ""
 
+let universalLink = ""
+let qqlink = ""
+
 let wechatNamed = "social_wechat"
 let wechatTlNamed = "social_wechattimeline"
 let qqNamed = "social_qq"
@@ -44,10 +47,11 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         view.addSubview(tableView)
                 
-        ShareManager.shared.socails.append(Social(type: .wechat, icon: UIImage(named: wechatNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: ""))
-        ShareManager.shared.socails.append(Social(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: ""))
-        ShareManager.shared.socails.append(Social(type: .QQ, icon: UIImage(named: qqNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: ""))
-        ShareManager.shared.socails.append(Social(type: .QZone, icon: UIImage(named: qZoneNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: ""))
+        ShareManager.shared.socails.append(Social(type: .wechat, icon: UIImage(named: wechatNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: universalLink))
+        ShareManager.shared.socails.append(Social(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: universalLink))
+        ShareManager.shared.socails.append(Social(type: .QQ, icon: UIImage(named: qqNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: qqlink))
+        ShareManager.shared.socails.append(Social(type: .QZone, icon: UIImage(named: qZoneNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: qqlink))
+        ShareManager.shared.register()
     }
     
     override func viewDidLayoutSubviews() {
@@ -93,7 +97,9 @@ extension ViewController {
         switch index {
         case 0:
 
-            let web = ResourceWeb(title: "hello", description: "desc", thumb: UIImage(named: "social_wechat")!, url: "https://github.com/ablettchen")
+            let image = UIImage(named: "avatar")!
+            let web = ResourceWeb(title: "SocailShare", description: "社会化分享工具", thumb: image, url: "https://github.com/ablettchen/SocailShare")
+            
             ShareManager.shared.show(resource: web) { (error, socail) in
                 guard error == nil else {
                     let text = "\(error?.localizedDescription ?? "error")"
@@ -101,7 +107,9 @@ extension ViewController {
                     UIApplication.shared.keyWindow!.showToast(text)
                     return
                 }
-                debugPrint("\(socail?.type.description ?? "") shared successfully")
+                let text = "\(socail?.type.description ?? "") shared successfully"
+                debugPrint(text)
+                UIApplication.shared.keyWindow!.showToast(text)
             }
             
             break

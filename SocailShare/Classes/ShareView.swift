@@ -262,7 +262,9 @@ extension ShareView: UICollectionViewDataSource {
 
 extension ShareView: UICollectionViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        didSelected?(indexPath.item)
+        hide { [weak self] (finished) in
+            self?.didSelected?(indexPath.item)
+        }
     }
 }
 
@@ -319,7 +321,7 @@ class ShareItemCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        let iconSize = CGSize(width: 35, height: 35)
+        let iconSize = CGSize(width: 55, height: 55)
         let space: CGFloat = 10.0
         let titleHeigit: CGFloat = 11.0
         
