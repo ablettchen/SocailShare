@@ -100,34 +100,17 @@ public class ShareManager: NSObject {
                 }else {
                     Wechat.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
                 }
-                
-//                let wechatShare = url.host == "platformId=wechat"
-//                let qqShare = url.host == "response_from_qq"
-//                if wechatShare {
-//                    return Wechat.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
-//                }else if qqShare {
-//                    return QQ.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
-//                }
             }
         }
         return true
     } 
     
     public func handle(open url: URL) -> Bool {
-        
         if QQ.shared.can(open: url) {
             return QQ.shared.handle(open: url)
         }else {
             return Wechat.shared.handle(open: url)
         }
-        
-//        let wechatShare = url.host == "platformId=wechat"
-//        let qqShare = url.host == "response_from_qq"
-//        if wechatShare {
-//            return Wechat.shared.handle(open: url)
-//        }else if qqShare {
-//            return QQ.shared.handle(open: url)
-//        }
         return true
     }
 }
