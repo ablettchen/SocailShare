@@ -69,7 +69,7 @@ public class ShareManager: NSObject {
     ///   - resource: 资源 ( 类型：String、UIImage、ResourceWeb )
     ///   - types: 场景
     ///   - finished: 完成回到
-    public func show(isLandscape: Bool = false, resource: Any, types: [SceneType]? = nil, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
+    public func show(resource: Any, types: [SceneType]? = nil, isLandscape: Bool = false, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
         let scenes = ShareManager.enableValidate(types: types)
         let items = ShareManager.items(scenes: scenes)
         guard isLandscape else {

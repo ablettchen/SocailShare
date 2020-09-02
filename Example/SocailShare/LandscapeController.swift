@@ -72,7 +72,7 @@ private extension LandscapeController {
         let image = UIImage(named: "avatar")!
         let web = ResourceWeb(title: "SocailShare", description: "社会化分享工具", thumb: image, url: "https://github.com/ablettchen/SocailShare")
         
-        ShareManager.shared.show(isLandscape: true, resource: web) { (error, scence) in
+        ShareManager.shared.show(resource: web, isLandscape: true) { (error, scence) in
             guard error == nil else {
                 UIApplication.shared.keyWindow!.showToast("\(error?.localizedDescription ?? "分享失败")")
                 return
