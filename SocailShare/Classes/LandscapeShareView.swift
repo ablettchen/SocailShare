@@ -204,7 +204,7 @@ private extension LandscapeShareView {
         )
         UIView.animate(withDuration: 0.25, delay: 0, options: opitons, animations: { [weak self] in
             self?.alpha = 1.0
-        }) { [weak self] (finished) in
+        }) { (finished) in
             completion?(finished)
         }
     }
