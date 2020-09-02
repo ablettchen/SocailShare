@@ -69,10 +69,25 @@ public class ShareManager: NSObject {
     ///   - resource: 资源
     ///   - types: 场景
     ///   - finished: 完成回到
-    public func show(resource: Any, types: [SceneType]? = nil, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
+    public func show(isLandscape: Bool = false, resource: Any, types: [SceneType]? = nil, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
         let scenes = ShareManager.enableValidate(types: types)
         let items = ShareManager.items(scenes: scenes)
-        let alert = ShareView()
+        guard isLandscape else {
+            let alert = ShareView()
+            alert.show(items: items) { (index) in
+                guard index < scenes.count else {
+                    debugPrint("分享平台为空")
+                    return
+                }
+                let scene = scenes[index]
+                ShareManager.shared.share(resource: resource, type: scene.type) { (error) in
+                    finished?(error, scene)
+                }
+            }
+            return
+        }
+        
+        let alert = LandscapeShareView()
         alert.show(items: items) { (index) in
             guard index < scenes.count else {
                 debugPrint("分享平台为空")

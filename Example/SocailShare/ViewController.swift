@@ -31,6 +31,8 @@ class ViewController: UIViewController {
         _tableView.dataSource = self
         _tableView.tableFooterView = UIView()
         _tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        _tableView.backgroundColor = .clear
+        _tableView.backgroundView = UIImageView(image: UIImage(named: "background_portrait"))
         return _tableView
     }()
     
@@ -38,12 +40,12 @@ class ViewController: UIViewController {
         return [
             "分享事件",
             "分享弹窗",
+            "进入横屏"
         ]
     }()
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        super.viewDidLoad()        
         view.addSubview(tableView)
         
         // 场景预设
@@ -79,6 +81,8 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.backgroundColor = .clear
+        cell.textLabel?.textColor = .white
         cell.textLabel?.text = dataSource[indexPath.row]
     }
     
@@ -105,13 +109,12 @@ extension ViewController {
                 UIApplication.shared.keyWindow!.showToast("分享成功")
             }
 
-            break
         case 1:
             
             let image = UIImage(named: "avatar")!
             let web = ResourceWeb(title: "SocailShare", description: "社会化分享工具", thumb: image, url: "https://github.com/ablettchen/SocailShare")
             
-            ShareManager.shared.show(resource: web) { (error, socail) in
+            ShareManager.shared.show(resource: web) { (error, scence) in
                 guard error == nil else {
                     UIApplication.shared.keyWindow!.showToast("\(error?.localizedDescription ?? "分享失败")")
                     return
@@ -119,7 +122,11 @@ extension ViewController {
                 UIApplication.shared.keyWindow!.showToast("分享成功")
             }
             
-            break
+        case 2:
+
+            let vc = LandscapeController()
+            navigationController?.pushViewController(vc, animated: true)
+            
         default: break
         }
     }
