@@ -195,8 +195,10 @@ private extension Wechat {
     /// - Returns: 错误信息
     func validate(image: UIImage, isThumb: Bool = false) -> Error? {
         let data = image.jpegData(compressionQuality: 1.0)!
-        let refer = (isThumb ? 64 : 1024 * 25)
-        guard (data.count / 1000) < refer else {
+        let kb = 1024
+        let mb = kb * 1024
+        let refer = (isThumb ? kb * 64 : mb * 25)
+        guard data.count < refer else {
             return NSError.init(domain: "Wechat", code: 10001, userInfo: [NSLocalizedDescriptionKey : isThumb ? "缩略图太大" : "图片太大"])
         }
         return nil

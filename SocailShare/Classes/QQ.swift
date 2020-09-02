@@ -187,8 +187,10 @@ private extension QQ {
 
     func validate(image: UIImage, isThumb: Bool = false) -> Error? {
         let data = image.jpegData(compressionQuality: 1.0)!
-        let refer = (isThumb ? 1024 : 1024 * 5)
-        guard (data.count / 1000) < refer else {
+        let kb = 1024
+        let mb = kb * 1024
+        let refer = (isThumb ? mb * 1 : mb * 5)
+        guard data.count < refer else {
             return NSError.init(domain: "Scene", code: 10001, userInfo: [NSLocalizedDescriptionKey : isThumb ? "缩略图太大" : "图片太大"])
         }
         return nil
