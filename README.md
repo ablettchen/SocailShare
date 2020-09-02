@@ -6,41 +6,39 @@
 
 ## Example
 
-#### 1、配置平台信息
+#### 1、场景预设
 
 ```swift
-ShareManager.shared.socails.append(Social(type: .wechat, icon: UIImage(named: wechatNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: ""))
-ShareManager.shared.socails.append(Social(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: ""))
-ShareManager.shared.socails.append(Social(type: .QQ, icon: UIImage(named: qqNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: ""))
-ShareManager.shared.socails.append(Social(type: .QZone, icon: UIImage(named: qZoneNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: ""))
+ShareManager.shared.scenes.append(Scene(type: .wechat, icon: UIImage(named: wechatNamed)!))
+ShareManager.shared.scenes.append(Scene(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!))
+ShareManager.shared.scenes.append(Scene(type: .QQ, icon: UIImage(named: qqNamed)!))
+ShareManager.shared.scenes.append(Scene(type: .QZone, icon: UIImage(named: qZoneNamed)!))
+ShareManager.shared.register(qqKey: qqKey, qqLink: qqlink, wechatKey: wechatKey, wechatLink: universalLink)
 ```
 
-#### 2、调用分享事件
+#### 2、分享事件
 
 ```swift
 ShareManager.shared.share(resource: "hello", type: .wechat) { (error) in
     guard error == nil else {
-        let text = "\(error?.localizedDescription ?? "error")"
-        debugPrint(text)
-        UIApplication.shared.keyWindow!.showToast(text)
+        UIApplication.shared.keyWindow!.showToast("\(error?.localizedDescription ?? "分享失败")")
         return
     }
-    debugPrint("shared successfully")
+    UIApplication.shared.keyWindow!.showToast("分享成功")
 }
 ```
 
-#### 3、调用分享弹窗
+#### 3、分享弹窗
 
 ```swift
-let web = ResourceWeb(title: "hello", description: "desc", thumb: UIImage(named: "social_wechat")!, url: "https://github.com/ablettchen")
+let image = UIImage(named: "avatar")!
+let web = ResourceWeb(title: "SocailShare", description: "社会化分享工具", thumb: image, url: "https://github.com/ablettchen/SocailShare")
 ShareManager.shared.show(resource: web) { (error, socail) in
     guard error == nil else {
-        let text = "\(error?.localizedDescription ?? "error")"
-        debugPrint(text)
-        UIApplication.shared.keyWindow!.showToast(text)
+        UIApplication.shared.keyWindow!.showToast("\(error?.localizedDescription ?? "分享失败")")
         return
     }
-    debugPrint("\(socail?.type.description ?? "") shared successfully")
+    UIApplication.shared.keyWindow!.showToast("分享成功")
 }
 ```
 

@@ -19,25 +19,43 @@ public class ShareManager: NSObject {
     public var isOnlyShowInstalled = false
     
     /// 平台信息预设
-    public var socails: [Social] = []
-    
-    private var finished: ((_ error: Error?) -> Void)?
+    public var scenes: [Scene] = []
 
     /// 分享
     /// - Parameters:
     ///   - resource: 资源
-    ///   - socail: 平台
+    ///   - type: 场景
     ///   - finished: 完成回调
-    public func share(resource: Any, type: SocialType, finished: ((_ error: Error?) -> Void)?) {
-        if let socail = ShareManager.presetValidate(type: type, exception: finished) {
-            self.finished = finished
+    public func share(resource: Any, type: SceneType, finished: ((_ error: Error?) -> Void)?) {
+        if let scene = ShareManager.presetValidate(type: type, exception: finished) {
             switch resource {
             case let text as String:
-                socail.shareText(text, finished: finished)
+                
+                switch type {
+                case .wechat: Wechat.shared.shareText(text, to: .sesson, finished: finished)
+                case .wechatTimeline: Wechat.shared.shareText(text, to: .timeline, finished: finished)
+                case .QQ: QQ.shared.shareText(text, to: .qq, finished: finished)
+                case .QZone: QQ.shared.shareText(text, to: .qZone, finished: finished)
+                }
+                
             case let image as UIImage:
-                socail.shareImage(image, finished: finished)
+                
+                switch type {
+                case .wechat: Wechat.shared.shareImage(image, to: .sesson, finished: finished)
+                case .wechatTimeline: Wechat.shared.shareImage(image, to: .timeline, finished: finished)
+                case .QQ: QQ.shared.shareImage(image, to: .qq, finished: finished)
+                case .QZone: QQ.shared.shareImage(image, to: .qZone, finished: finished)
+                }
+
             case let web as ResourceWeb:
-                socail.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url:web.url, finished: finished)
+                
+                switch type {
+                case .wechat: Wechat.shared.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url: web.url, to: .sesson, finished: finished)
+                case .wechatTimeline: Wechat.shared.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url: web.url, to: .timeline, finished: finished)
+                case .QQ: QQ.shared.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url: web.url, to: .qq, finished: finished)
+                case .QZone: QQ.shared.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url: web.url, to: .qZone, finished: finished)
+                }
+
             default:
                 let text = "\(resource):资源类型不支持"
                 let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
@@ -49,91 +67,89 @@ public class ShareManager: NSObject {
     /// 分享文本弹窗
     /// - Parameters:
     ///   - resource: 资源
-    ///   - types: 平台
+    ///   - types: 场景
     ///   - finished: 完成回到
-    public func show(resource: Any, socails types: [SocialType]? = nil, finished: ((_ error: Error?, _ socail: Social?) -> Void)?) {
-        let socails = ShareManager.installValidate(types: types)
-        let items = ShareManager.items(socails: socails)
+    public func show(resource: Any, types: [SceneType]? = nil, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
+        let scenes = ShareManager.enableValidate(types: types)
+        let items = ShareManager.items(scenes: scenes)
         let alert = ShareView()
         alert.show(items: items) { (index) in
-            guard index < socails.count else {
+            guard index < scenes.count else {
                 debugPrint("分享平台为空")
                 return
             }
-            let socail = socails[index]
-            ShareManager.shared.share(resource: resource, type: socail.type) { (error) in
-                finished?(error, socail)
+            let scene = scenes[index]
+            ShareManager.shared.share(resource: resource, type: scene.type) { (error) in
+                finished?(error, scene)
             }
         }
     }
     
     /// 注册平台信息
-    public func register() {
-        let socails = ShareManager.shared.socails
-        for socail in socails {
-            socail.register(delegate: self)
-        }
+    public func register(qqKey: String, qqLink: String, wechatKey: String, wechatLink: String) {
+        QQ.shared.register(appKey: qqKey, universalLink: qqLink)
+        Wechat.shared.register(appKey: wechatKey, universalLink: wechatLink)
     }
     
     public func handle(continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        return WXApi.handleOpenUniversalLink(userActivity, delegate: self)
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            if let url = userActivity.webpageURL {
+                
+                if QQ.shared.can(handleUniversalLink: url) {
+                    return QQ.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
+                }else {
+                    Wechat.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
+                }
+                
+//                let wechatShare = url.host == "platformId=wechat"
+//                let qqShare = url.host == "response_from_qq"
+//                if wechatShare {
+//                    return Wechat.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
+//                }else if qqShare {
+//                    return QQ.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
+//                }
+            }
+        }
+        return true
     } 
     
     public func handle(open url: URL) -> Bool {
-        let wechatShare = url.host == "platformId=wechat" && url.scheme == ShareManager.socail(.wechat)?.appKey
-        let qqShare = url.host == "response_from_qq"
-        if wechatShare {
-            WXApi.handleOpen(url, delegate: self)
-        }else if qqShare {
-            if TencentOAuth.canHandleUniversalLink(url) {TencentOAuth.handleUniversalLink(url)}
-            else if TencentOAuth.canHandleOpen(url) {TencentOAuth.handleOpen(url)}
-        }
-        return false
-    }
-}
-
-extension ShareManager: WXApiDelegate {
-    
-    public func onReq(_ req: BaseReq) {
         
-    }
-    
-    public func onResp(_ resp: BaseResp) {
-        finished?(nil)
-    }
-}
-
-extension ShareManager: TencentSessionDelegate {
-
-    public func tencentDidLogin() {}
-
-    public func tencentDidNotLogin(_ cancelled: Bool) {}
-
-    public func tencentDidNotNetWork() {}
-
-    public func responseDidReceived(_ response: APIResponse!, forMessage message: String!) {
-        debugPrint("\(message)")
+        if QQ.shared.can(open: url) {
+            return QQ.shared.handle(open: url)
+        }else {
+            return Wechat.shared.handle(open: url)
+        }
+        
+//        let wechatShare = url.host == "platformId=wechat"
+//        let qqShare = url.host == "response_from_qq"
+//        if wechatShare {
+//            return Wechat.shared.handle(open: url)
+//        }else if qqShare {
+//            return QQ.shared.handle(open: url)
+//        }
+        return true
     }
 }
 
 private extension ShareManager {
     
-    /// 平台信息转 UI 展示元素
-    /// - Parameter socails: 平台
+    /// 场景转 UI 展示元素
+    /// - Parameter socails: 场景
     /// - Returns: ui 展示元素
-    static func items(socails: [Social]) -> [(name: String, icon: UIImage?)] {
+    static func items(scenes: [Scene]) -> [(name: String, icon: UIImage?)] {
         var items: [(name: String, icon: UIImage?)] = []
-        for socail in socails {
-            items.append((socail.type.description, socail.icon))
+        for scene in scenes {
+            items.append((scene.type.description, scene.icon))
         }
         return items
     }
     
-    /// 以平台类型取预设平台信息
-    /// - Parameter type: 平台类型
-    /// - Returns: 平台模型
-    static func socail(_ type: SocialType) -> Social? {
-        for s in ShareManager.shared.socails {
+    /// 以类型取场景
+    /// - Parameter type: 场景类型
+    /// - Returns: 场景
+    static func scene(_ type: SceneType) -> Scene? {
+        for s in ShareManager.shared.scenes {
             if s.type == type {
                 return s
             }
@@ -141,52 +157,52 @@ private extension ShareManager {
         return nil
     }
     
-    /// 以平台类型取预设平台信息
-    /// - Parameter types: 平台类型
-    /// - Returns: 平台模型
-    static func socails(_ types: [SocialType]?) -> [Social]? {
-        var socails: [Social]? = []
+    /// 以类型取场景
+    /// - Parameter types: 场景类型
+    /// - Returns: 场景
+    static func scenes(_ types: [SceneType]?) -> [Scene]? {
+        var scenes: [Scene]? = []
         if let types = types {
             for type in types {
-                if let socail = ShareManager.socail(type) {
-                    socails?.append(socail)
+                if let scene = ShareManager.scene(type) {
+                    scenes?.append(scene)
                 }
             }
-            return socails
+            return scenes
         }
         return nil
     }
     
-    /// 分享平台信息验证
+    /// 预设信息校验
     /// - Parameters:
     ///   - type: 类型
     ///   - exception: 异常回调
-    /// - Returns: 平台
-    static func presetValidate(type: SocialType, exception: ((_ error: Error) -> Void)?) -> Social? {
-        guard let socail = ShareManager.socail(type) else {
+    /// - Returns: 场景
+    static func presetValidate(type: SceneType, exception: ((_ error: Error) -> Void)?) -> Scene? {
+        guard let scene = ShareManager.scene(type) else {
             let text = "未找到\(type.description)"
             let error = NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : text])
             exception?(error)
             return nil
         }
-        return socail
+        return scene
     }
     
-    /// 安装信息校验
-    /// - Parameter types: 平台类型
-    /// - Returns: 平台
-    static func installValidate(types: [SocialType]? = nil) -> [Social] {
-        var socails = ShareManager.socails(types) ?? ShareManager.shared.socails
-        var instailled: [Social] = []
+    /// 场景可用校验
+    /// - Parameter types: 场景类型
+    /// - Returns: 场景
+    static func enableValidate(types: [SceneType]? = nil) -> [Scene] {
+        var scenes = ShareManager.scenes(types) ?? ShareManager.shared.scenes
+        var instailled: [Scene] = []
         if ShareManager.shared.isOnlyShowInstalled {
-            for socail in socails {
-                if socail.isInstall() {
-                    instailled.append(socail)
+            for scene in scenes {
+                if scene.enable() {
+                    instailled.append(scene)
                 }
             }
-            socails = instailled
+            scenes = instailled
         }
-        return socails
+        return scenes
     }
 }
 
@@ -194,25 +210,4 @@ private extension ShareManager {
 
 
 
-/// 网页
-public struct ResourceWeb {
-    
-    /// 标题
-    public var title: String
-    
-    /// 描述
-    public var description: String
-    
-    /// 缩略图
-    public var thumb: UIImage
-    
-    /// 链接
-    public var url: String
-    
-    public init(title: String, description: String, thumb: UIImage, url: String) {
-        self.title = title
-        self.description = description
-        self.thumb = thumb
-        self.url = url
-    }
-}
+

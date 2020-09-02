@@ -1,0 +1,14 @@
+//
+//  Socails.xcconfig
+//  SocailShare_Example
+//
+//  Created by ablett on 2020/9/2.
+//  Copyright © 2020 CocoaPods. All rights reserved.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+
+QQ_APPID = 101831834
+WECHAT_ID = wx15f37274b0e8f18c

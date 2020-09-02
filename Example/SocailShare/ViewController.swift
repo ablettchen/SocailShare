@@ -13,9 +13,7 @@ import ATToast
 
 
 let wechatKey = ""
-let wechatSecret = ""
 let qqKey = ""
-let qqSecret = ""
 
 let universalLink = ""
 let qqlink = ""
@@ -38,7 +36,8 @@ class ViewController: UIViewController {
     
     private lazy var dataSource:[String] = {
         return [
-            "Share",
+            "分享事件",
+            "分享弹窗",
         ]
     }()
 
@@ -46,12 +45,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         view.addSubview(tableView)
-                
-        ShareManager.shared.socails.append(Social(type: .wechat, icon: UIImage(named: wechatNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: universalLink))
-        ShareManager.shared.socails.append(Social(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!, appKey: wechatKey, appSecret: wechatSecret, universalLink: universalLink))
-        ShareManager.shared.socails.append(Social(type: .QQ, icon: UIImage(named: qqNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: qqlink))
-        ShareManager.shared.socails.append(Social(type: .QZone, icon: UIImage(named: qZoneNamed)!, appKey: qqKey, appSecret: qqSecret, universalLink: qqlink))
-        ShareManager.shared.register()
+        
+        // 场景预设
+        ShareManager.shared.scenes.append(Scene(type: .wechat, icon: UIImage(named: wechatNamed)!))
+        ShareManager.shared.scenes.append(Scene(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!))
+        ShareManager.shared.scenes.append(Scene(type: .QQ, icon: UIImage(named: qqNamed)!))
+        ShareManager.shared.scenes.append(Scene(type: .QZone, icon: UIImage(named: qZoneNamed)!))
+        ShareManager.shared.register(qqKey: qqKey, qqLink: qqlink, wechatKey: wechatKey, wechatLink: universalLink)
     }
     
     override func viewDidLayoutSubviews() {
@@ -96,27 +96,28 @@ extension ViewController {
         
         switch index {
         case 0:
+            
+            ShareManager.shared.share(resource: "hello", type: .wechat) { (error) in
+                guard error == nil else {
+                    UIApplication.shared.keyWindow!.showToast("\(error?.localizedDescription ?? "分享失败")")
+                    return
+                }
+                UIApplication.shared.keyWindow!.showToast("分享成功")
+            }
 
+            break
+        case 1:
+            
             let image = UIImage(named: "avatar")!
             let web = ResourceWeb(title: "SocailShare", description: "社会化分享工具", thumb: image, url: "https://github.com/ablettchen/SocailShare")
             
             ShareManager.shared.show(resource: web) { (error, socail) in
                 guard error == nil else {
-                    let text = "\(error?.localizedDescription ?? "error")"
-                    debugPrint(text)
-                    UIApplication.shared.keyWindow!.showToast(text)
+                    UIApplication.shared.keyWindow!.showToast("\(error?.localizedDescription ?? "分享失败")")
                     return
                 }
-                let text = "\(socail?.type.description ?? "") shared successfully"
-                debugPrint(text)
-                UIApplication.shared.keyWindow!.showToast(text)
+                UIApplication.shared.keyWindow!.showToast("分享成功")
             }
-            
-            break
-        case 1:
-            
-
-            
             
             break
         default: break
