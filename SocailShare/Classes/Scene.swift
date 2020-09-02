@@ -47,7 +47,6 @@ public struct Scene {
         case .QQ, .QZone:
             return QQ.shared.isInstall()
         }
-        return false
     }
 }
 

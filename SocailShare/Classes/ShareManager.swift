@@ -27,7 +27,7 @@ public class ShareManager: NSObject {
     ///   - type: 场景
     ///   - finished: 完成回调
     public func share(resource: Any, type: SceneType, finished: ((_ error: Error?) -> Void)?) {
-        if let scene = ShareManager.presetValidate(type: type, exception: finished) {
+        if let _ = ShareManager.presetValidate(type: type, exception: finished) {
             switch resource {
             case let text as String:
                 
@@ -94,11 +94,10 @@ public class ShareManager: NSObject {
     public func handle(continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             if let url = userActivity.webpageURL {
-                
                 if QQ.shared.can(handleUniversalLink: url) {
                     return QQ.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
                 }else {
-                    Wechat.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
+                    return Wechat.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
                 }
             }
         }
@@ -111,7 +110,6 @@ public class ShareManager: NSObject {
         }else {
             return Wechat.shared.handle(open: url)
         }
-        return true
     }
 }
 

@@ -141,7 +141,7 @@ extension QQ {
     public func register(appKey: String, universalLink: String) {
         self.appKey = appKey
         self.universalLink = universalLink
-        TencentOAuth.init(appId: appKey, enableUniveralLink: true, universalLink:universalLink, delegate: self)
+        _ = TencentOAuth.init(appId: appKey, enableUniveralLink: true, universalLink:universalLink, delegate: self)
     }
     
     public func can(handleUniversalLink url: URL) -> Bool {
@@ -174,17 +174,11 @@ extension QQ {
     func isInstall() -> Bool {
         return QQApiInterface.isQQInstalled()
     }
-    
-    func register(delegate: TencentSessionDelegate) {
-        TencentOAuth.init(appId: appKey, enableUniveralLink: true, universalLink:universalLink, delegate: delegate)
-    }
-    
 }
 
 private extension QQ {
     
     func prepare() -> Error? {
-        register(delegate: self)
         guard isInstall() else {
             return NSError(domain: "QQ", code: 10000, userInfo: [NSLocalizedDescriptionKey : "\(QQScene.qq)未安装"])
         }
@@ -219,10 +213,6 @@ extension QQ: QQApiInterfaceDelegate {
     public func onResp(_ resp: QQBaseResp!) {
         switch resp.type {
         case 2:
-            
-            let req = resp as? SendMessageToQQResp
-            let text = resp.errorDescription;
-            let text1 = resp.result
             
             guard resp.result == "0" else {
                 let text = resp.errorDescription ?? "分享失败"

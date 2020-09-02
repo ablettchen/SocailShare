@@ -211,9 +211,8 @@ extension Wechat: WXApiDelegate {
     public func onResp(_ resp: BaseResp) {
         switch resp {
         case let response as SendMessageToWXResp:
-
             guard response.errCode == 0 else {
-                let text = resp.errStr ?? "分享失败"
+                let text = resp.errStr
                 let error = NSError(domain: "Wechat", code: 10000, userInfo: [NSLocalizedDescriptionKey : "\(text)"])
                 finished?(error)
                 return
