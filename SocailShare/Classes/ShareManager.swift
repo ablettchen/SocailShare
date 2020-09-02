@@ -23,7 +23,7 @@ public class ShareManager: NSObject {
 
     /// 分享
     /// - Parameters:
-    ///   - resource: 资源
+    ///   - resource: 资源（resource 可传 String、UIImage、ResourceWeb 类型的实例）
     ///   - type: 场景
     ///   - finished: 完成回调
     public func share(resource: Any, type: SceneType, finished: ((_ error: Error?) -> Void)?) {
@@ -66,7 +66,7 @@ public class ShareManager: NSObject {
 
     /// 分享文本弹窗
     /// - Parameters:
-    ///   - resource: 资源
+    ///   - resource: 资源（resource 可传 String、UIImage、ResourceWeb 类型的实例）
     ///   - types: 场景
     ///   - finished: 完成回到
     public func show(isLandscape: Bool = false, resource: Any, types: [SceneType]? = nil, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
