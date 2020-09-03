@@ -22,7 +22,7 @@ public struct ResourceWeb {
     /// 缩略图
     public var thumb: UIImage
     
-    public init( url: String, title: String, description: String, thumb: UIImage) {
+    public init(url: String, title: String, description: String, thumb: UIImage) {
         self.url = url
         self.title = title
         self.description = description
