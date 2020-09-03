@@ -221,7 +221,7 @@ private extension LandscapeShareView {
 
 extension LandscapeShareView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        return true
+        return touch.view?.isEqual(backgroundView) ?? false || touch.view?.isEqual(effectView) ?? false
     }
 }
 

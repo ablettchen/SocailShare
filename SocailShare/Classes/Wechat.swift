@@ -227,10 +227,3 @@ extension Wechat: WXApiDelegate {
         }
     }
 }
-
-
-
-
-
-
-

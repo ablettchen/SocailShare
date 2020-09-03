@@ -201,9 +201,3 @@ private extension ShareManager {
         return scenes
     }
 }
-
-
-
-
-
-
