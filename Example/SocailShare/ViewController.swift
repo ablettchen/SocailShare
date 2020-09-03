@@ -113,7 +113,7 @@ extension ViewController {
             
             let image = UIImage(named: "avatar")!
             let url = "https://github.com/ablettchen/SocailShare"
-            let web = ResourceWeb(url: url, title: "SocailShare", description: "社会化分享工具", thumb: image)
+            let web = ResourceWeb(url: url, title: "SocailShare", description: "社会化分享", thumb: image)
             
             ShareManager.shared.show(resource: web) { (error, scence) in
                 guard error == nil else {
