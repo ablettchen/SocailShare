@@ -15,8 +15,8 @@ public class ShareManager: NSObject {
     /// 单例
     public static let shared = ShareManager()
     
-    /// 是否验证平台已安装
-    public var isOnlyShowInstalled = false
+    /// 是否只已安装可见
+    public var isInstalledEnable = false
     
     /// 平台信息预设
     public var scenes: [Scene] = []
@@ -26,7 +26,7 @@ public class ShareManager: NSObject {
     ///   - resource: 资源 ( 类型：String、UIImage、ResourceWeb )
     ///   - type: 场景
     ///   - finished: 完成回调
-    public func share(resource: Any, type: SceneType, finished: ((_ error: Error?) -> Void)?) {
+    public func share(resource: Any, to type: SceneType, finished: ((_ error: Error?) -> Void)?) {
         if let _ = ShareManager.presetValidate(type: type, exception: finished) {
             switch resource {
             case let text as String:
@@ -50,10 +50,10 @@ public class ShareManager: NSObject {
             case let web as ResourceWeb:
                 
                 switch type {
-                case .wechat: Wechat.shared.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url: web.url, to: .sesson, finished: finished)
-                case .wechatTimeline: Wechat.shared.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url: web.url, to: .timeline, finished: finished)
-                case .QQ: QQ.shared.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url: web.url, to: .qq, finished: finished)
-                case .QZone: QQ.shared.shareWeb(title: web.title, description: web.description, thumb: web.thumb, url: web.url, to: .qZone, finished: finished)
+                case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumb: web.thumb, to: .sesson, finished: finished)
+                case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumb: web.thumb, to: .timeline, finished: finished)
+                case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumb: web.thumb, to: .qq, finished: finished)
+                case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumb: web.thumb, to: .qZone, finished: finished)
                 }
 
             default:
@@ -68,11 +68,11 @@ public class ShareManager: NSObject {
     /// - Parameters:
     ///   - resource: 资源 ( 类型：String、UIImage、ResourceWeb )
     ///   - types: 场景
-    ///   - finished: 完成回到
-    public func show(resource: Any, types: [SceneType]? = nil, isLandscape: Bool = false, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
+    ///   - finished: 完成回调
+    public func show(resource: Any, to types: [SceneType]? = nil, isLandscape: Bool? = false, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
         let scenes = ShareManager.enableValidate(types: types)
         let items = ShareManager.items(scenes: scenes)
-        guard isLandscape else {
+        guard isLandscape ?? false else {
             let alert = ShareView()
             alert.show(items: items) { (index) in
                 guard index < scenes.count else {
@@ -80,7 +80,7 @@ public class ShareManager: NSObject {
                     return
                 }
                 let scene = scenes[index]
-                ShareManager.shared.share(resource: resource, type: scene.type) { (error) in
+                ShareManager.shared.share(resource: resource, to: scene.type) { (error) in
                     finished?(error, scene)
                 }
             }
@@ -94,7 +94,7 @@ public class ShareManager: NSObject {
                 return
             }
             let scene = scenes[index]
-            ShareManager.shared.share(resource: resource, type: scene.type) { (error) in
+            ShareManager.shared.share(resource: resource, to: scene.type) { (error) in
                 finished?(error, scene)
             }
         }
@@ -190,7 +190,7 @@ private extension ShareManager {
     static func enableValidate(types: [SceneType]? = nil) -> [Scene] {
         var scenes = ShareManager.scenes(types) ?? ShareManager.shared.scenes
         var instailled: [Scene] = []
-        if ShareManager.shared.isOnlyShowInstalled {
+        if ShareManager.shared.isInstalledEnable {
             for scene in scenes {
                 if scene.enable() {
                     instailled.append(scene)

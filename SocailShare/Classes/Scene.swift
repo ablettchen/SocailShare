@@ -50,28 +50,7 @@ public struct Scene {
     }
 }
 
-/// 网页
-public struct ResourceWeb {
-    
-    /// 标题
-    public var title: String
-    
-    /// 描述
-    public var description: String
-    
-    /// 缩略图
-    public var thumb: UIImage
-    
-    /// 链接
-    public var url: String
-    
-    public init(title: String, description: String, thumb: UIImage, url: String) {
-        self.title = title
-        self.description = description
-        self.thumb = thumb
-        self.url = url
-    }
-}
+
 
 
 

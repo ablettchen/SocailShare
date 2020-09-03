@@ -99,21 +99,21 @@ public class Wechat: NSObject {
         }        
     }
     
-    /// 分享网页链接
+    /// 分享链接
     /// - Parameters:
+    ///   - url: 链接
     ///   - title: 标题
     ///   - description: 描述
     ///   - thumb: 缩略图
-    ///   - url: 链接
     ///   - scene: 场景
     ///   - finished: 完成回调
-    public func shareWeb(title: String, description: String, thumb: UIImage, url: String, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
+    public func shareWeb(url: String, title: String, description: String, thumb: UIImage, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
         
         if let error = prepare() {
             finished?(error)
             return
         }
-
+        
         if let error = validate(image: thumb, isThumb: true) {
             finished?(error)
             return
@@ -171,7 +171,7 @@ extension Wechat {
         }
         return true
     }
-
+    
     public func isInstall() -> Bool {
         return WXApi.isWXAppInstalled()
     }
@@ -207,11 +207,13 @@ private extension Wechat {
 
 
 extension Wechat: WXApiDelegate {
-
+    
     public func onReq(_ req: BaseReq) {}
-
+    
     public func onResp(_ resp: BaseResp) {
+        
         switch resp {
+            
         case let response as SendMessageToWXResp:
             guard response.errCode == 0 else {
                 let text = resp.errStr
@@ -223,7 +225,6 @@ extension Wechat: WXApiDelegate {
             
         default: break
         }
-        
     }
 }
 

@@ -15,7 +15,6 @@ public class ShareView: UIView {
     public func show(in view: UIView? = nil, items: [(name: String, icon: UIImage?)], action: ((_ index: Int) -> Void)?) {
         datas = items
         didSelected = action
-        
         show(in: view ?? UIApplication.shared.keyWindow!)
     }
     
@@ -31,15 +30,13 @@ public class ShareView: UIView {
         let view = UIVisualEffectView.init(effect: UIBlurEffect.init(style: .extraLight))
         return view
     }()
-    
-    /// 背景视图
+
     private lazy var backgroundView: UIView = {
         let view = UIView()
         view.alpha = 0.001
         return view
     }()
 
-    /// 标题标签
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16)
@@ -67,8 +64,7 @@ public class ShareView: UIView {
         view.decelerationRate = .fast
         return view;
     }()
-    
-    /// 关闭按钮
+
     private lazy var closeButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = .systemFont(ofSize: 16)
@@ -95,10 +91,8 @@ private extension ShareView {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapAction(_:)))
         tap.cancelsTouchesInView = false
         tap.delegate = self
-        
         backgroundView.addGestureRecognizer(tap)
         backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.5)
-        //backgroundColor = .white
     }
     
     private func show(in view: UIView) {
@@ -289,7 +283,7 @@ class ShareItemCell: UICollectionViewCell {
         }
     }
     
-    lazy var titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 11)
         label.textColor = UIColor(hexString: "#666666")
@@ -297,7 +291,7 @@ class ShareItemCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var iconView: UIImageView = {
+    private lazy var iconView: UIImageView = {
         let view = UIImageView()
         return view
     }()
@@ -311,9 +305,8 @@ class ShareItemCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func prepare() {
+    private func prepare() {
         backgroundColor = .clear
-        
         addSubview(titleLabel)
         addSubview(iconView)
     }
@@ -341,10 +334,6 @@ class ShareItemCell: UICollectionViewCell {
 
 fileprivate extension UIView {
     
-    /// 设置多个圆角
-    /// - Parameters:
-    ///   - cornerRadii: 圆角幅度
-    ///   - roundingCorners: UIRectCorner(rawValue: (UIRectCorner.topRight.rawValue) | (UIRectCorner.bottomRight.rawValue))
     func filletedCorner(_ cornerRadii:CGSize,_ roundingCorners:UIRectCorner)  {
         let fieldPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: roundingCorners, cornerRadii:cornerRadii)
         let fieldLayer = CAShapeLayer()

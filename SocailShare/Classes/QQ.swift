@@ -97,16 +97,15 @@ public class QQ: NSObject {
         }
     }
     
-    
-    /// 分享网页链接
+    /// 分享链接
     /// - Parameters:
+    ///   - url: 链接
     ///   - title: 标题
     ///   - description: 描述
     ///   - thumb: 缩略图
-    ///   - url: 链接
     ///   - scene: 场景
     ///   - finished: 完成回调
-    public func shareWeb(title: String, description: String, thumb: UIImage, url: String, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
+    public func shareWeb(url: String, title: String, description: String, thumb: UIImage, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
         
         if let error = prepare() {
             finished?(error)

@@ -14,7 +14,6 @@ public class LandscapeShareView: UIView {
     public func show(in view: UIView? = nil, items: [(name: String, icon: UIImage?)], action: ((_ index: Int) -> Void)?) {
         datas = items
         didSelected = action
-        
         show(in: view ?? UIApplication.shared.keyWindow!)
     }
     
@@ -269,7 +268,7 @@ class LandscapeItemCell: UICollectionViewCell {
         }
     }
     
-    lazy var titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 11)
         label.textColor = .white
@@ -277,7 +276,7 @@ class LandscapeItemCell: UICollectionViewCell {
         return label
     }()
     
-    lazy var iconView: UIImageView = {
+    private lazy var iconView: UIImageView = {
         let view = UIImageView()
         return view
     }()
@@ -291,7 +290,7 @@ class LandscapeItemCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func prepare() {
+    private func prepare() {
         backgroundColor = .clear
         
         addSubview(titleLabel)
