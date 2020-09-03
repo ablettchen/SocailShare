@@ -155,7 +155,7 @@ extension Wechat {
         else { debugPrint("\(WechatScene.sesson)注册失败") }
     }
     
-    public func handle(continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+    public func handle(continue userActivity: NSUserActivity) -> Bool {
         let url = userActivity.webpageURL
         let wechatShare = url?.host == "platformId=wechat" && url?.scheme == appKey
         if wechatShare {

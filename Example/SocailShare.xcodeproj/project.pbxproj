@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19A1CA102500BFBD0072322A /* ShareAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1CA0F2500BFBD0072322A /* ShareAdapter.swift */; };
 		19FED7D324FF93F0005D2998 /* LandscapeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FED7D224FF93F0005D2998 /* LandscapeController.swift */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		11CA81E4C6093F725A4C9D75 /* Pods_SocailShare_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SocailShare_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1955D64624FF4A070022A27E /* Socails.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Socails.xcconfig; sourceTree = "<group>"; };
+		19A1CA0F2500BFBD0072322A /* ShareAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareAdapter.swift; sourceTree = "<group>"; };
 		19D9DAC824F8EEE7000F95F3 /* SocailShare_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SocailShare_Example.entitlements; sourceTree = "<group>"; };
 		19FED7D224FF93F0005D2998 /* LandscapeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandscapeController.swift; sourceTree = "<group>"; };
 		3ABD3F15B038A0B26F8580F4 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
+				19A1CA0F2500BFBD0072322A /* ShareAdapter.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
 				19FED7D224FF93F0005D2998 /* LandscapeController.swift */,
 				1955D64624FF4A070022A27E /* Socails.xcconfig */,
@@ -251,6 +254,7 @@
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				19FED7D324FF93F0005D2998 /* LandscapeController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				19A1CA102500BFBD0072322A /* ShareAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

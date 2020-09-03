@@ -69,7 +69,7 @@ public class ShareManager: NSObject {
     ///   - resource: 资源 ( 类型：String、UIImage、ResourceWeb )
     ///   - types: 场景
     ///   - finished: 完成回调
-    public func show(resource: Any, to types: [SceneType]? = nil, isLandscape: Bool? = false, finished: ((_ error: Error?, _ socail: Scene?) -> Void)?) {
+    public func show(resource: Any, to types: [SceneType]? = nil, isLandscape: Bool? = false, finished: ((_ error: Error?, _ socail: Scene) -> Void)?) {
         let scenes = ShareManager.enableValidate(types: types)
         let items = ShareManager.items(scenes: scenes)
         guard isLandscape ?? false else {
@@ -106,13 +106,13 @@ public class ShareManager: NSObject {
         Wechat.shared.register(appKey: wechatKey, universalLink: wechatLink)
     }
 
-    public func handle(continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+    public func handle(continue userActivity: NSUserActivity) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             if let url = userActivity.webpageURL {
                 if QQ.shared.can(handleUniversalLink: url) {
-                    return QQ.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
+                    return QQ.shared.handle(continue: userActivity)
                 }else {
-                    return Wechat.shared.handle(continue: userActivity, restorationHandler: restorationHandler)
+                    return Wechat.shared.handle(continue: userActivity)
                 }
             }
         }

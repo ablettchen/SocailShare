@@ -9,12 +9,13 @@
 import UIKit
 
 /// 场景类型
+@objc(SceneType)
 public enum SceneType: Int, CustomStringConvertible {
     
     case wechat         = 1
     case wechatTimeline = 2
-    case QQ             = 3
-    case QZone          = 4
+    case QQ             = 4
+    case QZone          = 5
     
     public var description: String {
         switch self {
@@ -27,7 +28,7 @@ public enum SceneType: Int, CustomStringConvertible {
 }
 
 /// 场景
-public struct Scene {
+public class Scene: NSObject {
     
     /// 场景类型
     public var type: SceneType

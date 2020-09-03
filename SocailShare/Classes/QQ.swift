@@ -151,7 +151,7 @@ extension QQ {
         return TencentOAuth.canHandleOpen(url)
     }
     
-    public func handle(continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+    public func handle(continue userActivity: NSUserActivity) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             if let url = userActivity.webpageURL {
                 if TencentOAuth.canHandleUniversalLink(url) {
@@ -170,7 +170,7 @@ extension QQ {
         return true
     }
     
-    func isInstall() -> Bool {
+    public func isInstall() -> Bool {
         return QQApiInterface.isQQInstalled()
     }
 }
