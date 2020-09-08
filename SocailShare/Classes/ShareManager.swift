@@ -49,11 +49,28 @@ public class ShareManager: NSObject {
 
             case let web as ResourceWeb:
                 
-                switch type {
-                case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumb: web.thumb, to: .sesson, finished: finished)
-                case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumb: web.thumb, to: .timeline, finished: finished)
-                case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumb: web.thumb, to: .qq, finished: finished)
-                case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumb: web.thumb, to: .qZone, finished: finished)
+                switch web.thumb {
+                case let thumbImage as UIImage:
+                    switch type {
+                    case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbImage: thumbImage, to: .sesson, finished: finished)
+                    case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbImage: thumbImage, to: .timeline, finished: finished)
+                    case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbImage: thumbImage, to: .qq, finished: finished)
+                    case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbImage: thumbImage, to: .qZone, finished: finished)
+                    }
+                    
+                case let thumbData as URL:
+                    switch type {
+                    case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbData, to: .sesson, finished: finished)
+                    case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbData, to: .timeline, finished: finished)
+                    case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbData, to: .qq, finished: finished)
+                    case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbData, to: .qZone, finished: finished)
+                    }
+                    
+                default:
+                    let text = "ResourceWeb.thumb 类型必须为 UIImage 或 URL"
+                    let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
+                    finished?(error)
+                    break
                 }
 
             default:

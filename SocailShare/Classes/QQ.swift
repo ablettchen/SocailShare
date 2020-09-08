@@ -105,34 +105,22 @@ public class QQ: NSObject {
     ///   - thumb: 缩略图
     ///   - scene: 场景
     ///   - finished: 完成回调
-    public func shareWeb(url: String, title: String, description: String, thumb: UIImage, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
-        
-        if let error = prepare() {
-            finished?(error)
-            return
-        }
-        
-        if let error = validate(image: thumb, isThumb: true) {
-            finished?(error)
-            return
-        }
-        
-        let thumbData = thumb.jpegData(compressionQuality: 1.0)!
-        
-        let webObjc = QQApiNewsObject.init(url: URL(string: url), title: title, description: description, previewImageData: thumbData, targetContentType: .news)
-        let req = SendMessageToQQReq.init(content: webObjc)
-        var code: QQApiSendResultCode = .EQQAPISENDSUCESS;
-        if scene == .qq {
-            code = QQApiInterface.send(req)
-        }else if scene == .qZone {
-            code = QQApiInterface.sendReq(toQZone: req)
-        }
-        if code != .EQQAPISENDSUCESS {
-            finished?(NSError.init(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败(\(code.rawValue))"]))
-        }else {
-            self.finished = finished
-        }
+    public func shareWeb(url: String, title: String, description: String, thumbImage: UIImage, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
+        shareWeb(url: url, title: title, description: description, thumbObj: thumbImage, to: scene, finished: finished)
     }
+    
+    /// 分享链接
+    /// - Parameters:
+    ///   - url: 链接
+    ///   - title: 标题
+    ///   - description: 描述
+    ///   - thumb: 缩略图
+    ///   - scene: 场景
+    ///   - finished: 完成回调
+    public func shareWeb(url: String, title: String, description: String, thumbURL: URL, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
+        shareWeb(url: url, title: title, description: description, thumbObj: thumbURL, to: scene, finished: finished)
+    }
+
 }
 
 extension QQ {
@@ -177,6 +165,53 @@ extension QQ {
 
 private extension QQ {
     
+    func shareWeb(url: String, title: String, description: String, thumbObj: Any, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
+        
+        if let error = prepare() {
+            finished?(error)
+            return
+        }
+
+        var thumbItem: QQApiNewsObject? = nil
+        
+        switch thumbObj {
+        case let thumbImage as UIImage:
+            let thumbData = thumbImage.jpegData(compressionQuality: 1.0)!
+            if let error = validate(image: thumbImage, isThumb: true) {
+                finished?(error)
+                return
+            }
+            thumbItem = QQApiNewsObject.init(url: URL(string: url), title: title, description: description, previewImageData: thumbData, targetContentType: .news)
+
+        case let thumbUrl as URL:
+            thumbItem = QQApiNewsObject.init(url: URL(string: url), title: title, description: description, previewImageURL: thumbUrl, targetContentType: .news)
+            
+        default:
+            let error = NSError.init(domain: "Wechat", code: 10000, userInfo: [NSLocalizedDescriptionKey : "thumb 类型必须为 UIImage 或 URL"])
+            finished?(error)
+            return
+        }
+        
+        guard let thumb = thumbItem else {
+            let error = NSError.init(domain: "Wechat", code: 10000, userInfo: [NSLocalizedDescriptionKey : "缩略图获取失败"])
+            finished?(error)
+            return
+        }
+        
+        let req = SendMessageToQQReq.init(content: thumb)
+        var code: QQApiSendResultCode = .EQQAPISENDSUCESS;
+        if scene == .qq {
+            code = QQApiInterface.send(req)
+        }else if scene == .qZone {
+            code = QQApiInterface.sendReq(toQZone: req)
+        }
+        if code != .EQQAPISENDSUCESS {
+            finished?(NSError.init(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败(\(code.rawValue))"]))
+        }else {
+            self.finished = finished
+        }
+    }
+
     func prepare() -> Error? {
         guard isInstall() else {
             return NSError(domain: "QQ", code: 10000, userInfo: [NSLocalizedDescriptionKey : "\(QQScene.qq)未安装"])

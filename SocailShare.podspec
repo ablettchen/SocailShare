@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'SocailShare'
-  s.version          = '0.0.6'
+  s.version          = '0.0.7'
   s.summary          = '社会化分享'
   s.description      = <<-DESC
   TODO: Add long description of the pod here.
@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/ablettchen/SocailShare.git', :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/ablettchen'
   s.platform         = :ios, "9.0"
-  s.source_files     = 'SocailShare/Classes/**/*.{h,swift}'
+  s.source_files     = 'SocailShare/Classes/**/*.{h,swift,framework}'
   s.requires_arc     = true
   s.swift_version   = '5.1'
   
@@ -35,5 +35,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'SnapKit'
   s.dependency 'ATCategories'
+  s.dependency 'ATLoadView'
+  s.dependency 'SDWebImage'
 
 end

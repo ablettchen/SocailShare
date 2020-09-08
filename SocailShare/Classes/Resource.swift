@@ -20,9 +20,9 @@ public struct ResourceWeb {
     public var description: String
     
     /// 缩略图
-    public var thumb: UIImage
-    
-    public init(url: String, title: String, description: String, thumb: UIImage) {
+    public var thumb: Any // 类型: UIImage、URL
+
+    public init(url: String, title: String, description: String, thumb: Any) {
         self.url = url
         self.title = title
         self.description = description

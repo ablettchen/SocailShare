@@ -6,7 +6,8 @@
 //
 
 import Foundation
-
+import SDWebImage
+import ATLoadView
 
 public enum WechatScene: Int, CustomStringConvertible {
     
@@ -107,42 +108,20 @@ public class Wechat: NSObject {
     ///   - thumb: 缩略图
     ///   - scene: 场景
     ///   - finished: 完成回调
-    public func shareWeb(url: String, title: String, description: String, thumb: UIImage, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
-        
-        if let error = prepare() {
-            finished?(error)
-            return
-        }
-        
-        if let error = validate(image: thumb, isThumb: true) {
-            finished?(error)
-            return
-        }
-        
-        let thumbData = thumb.jpegData(compressionQuality: 1.0)!
-        
-        
-        let webObjc = WXWebpageObject()
-        webObjc.webpageUrl = url
-        
-        let message = WXMediaMessage()
-        message.title = title
-        message.description = description
-        message.thumbData = thumbData
-        message.mediaObject = webObjc
-        
-        let req = SendMessageToWXReq()
-        req.bText = false
-        req.message = message
-        req.scene = Int32(scene.rawValue)
-        
-        WXApi.send(req) { [weak self] (success) in
-            guard success else {
-                finished?(NSError.init(domain: "Wechat", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败"]))
-                return
-            }
-            self?.finished = finished
-        }
+    public func shareWeb(url: String, title: String, description: String, thumbImage: UIImage, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
+        shareWeb(url: url, title: title, description: description, thumbObj: thumbImage, to: scene, finished: finished)
+    }
+    
+    /// 分享链接
+    /// - Parameters:
+    ///   - url: 链接
+    ///   - title: 标题
+    ///   - description: 描述
+    ///   - thumb: 缩略图
+    ///   - scene: 场景
+    ///   - finished: 完成回调
+    public func shareWeb(url: String, title: String, description: String, thumbURL: URL, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
+        shareWeb(url: url, title: title, description: description, thumbObj: thumbURL, to: scene, finished: finished)
     }
 }
 
@@ -178,6 +157,64 @@ extension Wechat {
 }
 
 private extension Wechat {
+    
+    func shareWeb(url: String, title: String, description: String, thumbObj: Any, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
+        
+        if let error = prepare() {
+            finished?(error)
+            return
+        }
+
+        let prosess: ((_ url: String, _ title: String, _ description: String, _ thumb: UIImage, _ scene: WechatScene, _ finished: ((_ error: Error?) -> Void)?) -> Void) = { (url, title, description, thumb, scene, finished) in
+            
+            let thumbData = thumb.jpegData(compressionQuality: 1.0)!
+
+            let webObjc = WXWebpageObject()
+            webObjc.webpageUrl = url
+            
+            let message = WXMediaMessage()
+            message.title = title
+            message.description = description
+            message.thumbData = thumbData
+            message.mediaObject = webObjc
+            
+            let req = SendMessageToWXReq()
+            req.bText = false
+            req.message = message
+            req.scene = Int32(scene.rawValue)
+            
+            WXApi.send(req) { [weak self] (success) in
+                guard success else {
+                    finished?(NSError.init(domain: "Wechat", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败"]))
+                    return
+                }
+                self?.finished = finished
+            }
+        }
+        
+        switch thumbObj {
+        case let thumbImage as UIImage:
+            prosess(url, title, description, thumbImage, scene, finished)
+            
+        case let thumbUrl as URL:
+            
+            let loading = ATLoadView(text: "加载中...")
+            loading.show()
+            SDWebImageDownloader.shared.downloadImage(with: thumbUrl) { (image, data, error, fi) in
+                loading.hide()
+                guard error == nil, let thumb = image else {
+                    let error = NSError.init(domain: "Wechat", code: 10000, userInfo: [NSLocalizedDescriptionKey : error?.localizedDescription ?? "缩略图获取失败"])
+                    finished?(error)
+                    return
+                }
+                prosess(url, title, description, thumb, scene, finished)
+            }
+            
+        default:
+            let error = NSError.init(domain: "Wechat", code: 10000, userInfo: [NSLocalizedDescriptionKey : "thumb 类型必须为 UIImage 或 URL"])
+            finished?(error)
+        }
+    }
     
     /// 准备
     /// - Returns: 错误信息
