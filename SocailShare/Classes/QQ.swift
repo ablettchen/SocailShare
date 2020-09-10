@@ -48,8 +48,8 @@ public class QQ: NSObject {
             return
         }
         
-        let textObjc = QQApiTextObject.init(text: text)
-        let req = SendMessageToQQReq.init(content: textObjc)
+        let textObjc = QQApiTextObject(text: text)
+        let req = SendMessageToQQReq(content: textObjc)
         var code: QQApiSendResultCode = .EQQAPISENDSUCESS;
         if scene == .qq {
             code = QQApiInterface.send(req)
@@ -57,7 +57,7 @@ public class QQ: NSObject {
             code = QQApiInterface.sendReq(toQZone: req)
         }
         if code != .EQQAPISENDSUCESS {
-            finished?(NSError.init(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败(\(code.rawValue))"]))
+            finished?(NSError(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败(\(code.rawValue))"]))
         }else {
             self.finished = finished
         }
@@ -65,25 +65,23 @@ public class QQ: NSObject {
     
     /// 分享图片
     /// - Parameters:
-    ///   - image: 图片
+    ///   - data: 图片
     ///   - scene: 场景
     ///   - finished: 完成回调
-    public func shareImage(_ image: UIImage, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
+    public func shareImage(_ data: Data, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
         
         if let error = prepare() {
             finished?(error)
             return
         }
         
-        if let error = validate(image: image) {
+        if let error = validate(image: data) {
             finished?(error)
             return
         }
         
-        let imageData = image.jpegData(compressionQuality: 1.0)!
-        
-        let imageObjc = QQApiImageObject.init(data: imageData, previewImageData: nil, title: "", description: "")
-        let req = SendMessageToQQReq.init(content: imageObjc)
+        let imageObj = QQApiImageObject(data: data, previewImageData: nil, title: "", description: "")
+        let req = SendMessageToQQReq(content: imageObj)
         var code: QQApiSendResultCode = .EQQAPISENDSUCESS;
         if scene == .qq {
             code = QQApiInterface.send(req)
@@ -91,7 +89,7 @@ public class QQ: NSObject {
             code = QQApiInterface.sendReq(toQZone: req)
         }
         if code != .EQQAPISENDSUCESS {
-            finished?(NSError.init(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败(\(code.rawValue))"]))
+            finished?(NSError(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败(\(code.rawValue))"]))
         }else {
             self.finished = finished
         }
@@ -102,11 +100,11 @@ public class QQ: NSObject {
     ///   - url: 链接
     ///   - title: 标题
     ///   - description: 描述
-    ///   - thumb: 缩略图
+    ///   - thumbData: 缩略图
     ///   - scene: 场景
     ///   - finished: 完成回调
-    public func shareWeb(url: String, title: String, description: String, thumbImage: UIImage, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
-        shareWeb(url: url, title: title, description: description, thumbObj: thumbImage, to: scene, finished: finished)
+    public func shareWeb(url: String, title: String, description: String, thumbData: Data, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
+        shareWeb(url: url, title: title, description: description, thumb: thumbData, to: scene, finished: finished)
     }
     
     /// 分享链接
@@ -114,11 +112,11 @@ public class QQ: NSObject {
     ///   - url: 链接
     ///   - title: 标题
     ///   - description: 描述
-    ///   - thumb: 缩略图
+    ///   - thumbURL: 缩略图
     ///   - scene: 场景
     ///   - finished: 完成回调
     public func shareWeb(url: String, title: String, description: String, thumbURL: URL, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
-        shareWeb(url: url, title: title, description: description, thumbObj: thumbURL, to: scene, finished: finished)
+        shareWeb(url: url, title: title, description: description, thumb: thumbURL, to: scene, finished: finished)
     }
 
 }
@@ -128,7 +126,7 @@ extension QQ {
     public func register(appKey: String, universalLink: String) {
         self.appKey = appKey
         self.universalLink = universalLink
-        _ = TencentOAuth.init(appId: appKey, enableUniveralLink: true, universalLink:universalLink, delegate: self)
+        _ = TencentOAuth(appId: appKey, enableUniveralLink: true, universalLink:universalLink, delegate: self)
     }
     
     public func can(handleUniversalLink url: URL) -> Bool {
@@ -165,40 +163,39 @@ extension QQ {
 
 private extension QQ {
     
-    func shareWeb(url: String, title: String, description: String, thumbObj: Any, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
+    func shareWeb(url: String, title: String, description: String, thumb: Any, to scene: QQScene, finished: ((_ error: Error?) -> Void)?) {
         
         if let error = prepare() {
             finished?(error)
             return
         }
 
-        var thumbItem: QQApiNewsObject? = nil
+        var thumbObj: QQApiNewsObject? = nil
         
-        switch thumbObj {
-        case let thumbImage as UIImage:
-            let thumbData = thumbImage.jpegData(compressionQuality: 1.0)!
-            if let error = validate(image: thumbImage, isThumb: true) {
+        switch thumb {
+        case let thumbData as Data:
+            if let error = validate(image: thumbData, isThumb: true) {
                 finished?(error)
                 return
             }
-            thumbItem = QQApiNewsObject.init(url: URL(string: url), title: title, description: description, previewImageData: thumbData, targetContentType: .news)
+            thumbObj = QQApiNewsObject(url: URL(string: url), title: title, description: description, previewImageData: thumbData, targetContentType: .news)
 
         case let thumbUrl as URL:
-            thumbItem = QQApiNewsObject.init(url: URL(string: url), title: title, description: description, previewImageURL: thumbUrl, targetContentType: .news)
+            thumbObj = QQApiNewsObject(url: URL(string: url), title: title, description: description, previewImageURL: thumbUrl, targetContentType: .news)
             
         default:
-            let error = NSError.init(domain: "Wechat", code: 10000, userInfo: [NSLocalizedDescriptionKey : "thumb 类型必须为 UIImage 或 URL"])
+            let error = NSError(domain: "QQ", code: 10000, userInfo: [NSLocalizedDescriptionKey : "thumb 类型必须为 Data 或 URL"])
             finished?(error)
             return
         }
         
-        guard let thumb = thumbItem else {
-            let error = NSError.init(domain: "Wechat", code: 10000, userInfo: [NSLocalizedDescriptionKey : "缩略图获取失败"])
+        guard let thumbO = thumbObj else {
+            let error = NSError(domain: "QQ", code: 10000, userInfo: [NSLocalizedDescriptionKey : "缩略图获取失败"])
             finished?(error)
             return
         }
         
-        let req = SendMessageToQQReq.init(content: thumb)
+        let req = SendMessageToQQReq(content: thumbO)
         var code: QQApiSendResultCode = .EQQAPISENDSUCESS;
         if scene == .qq {
             code = QQApiInterface.send(req)
@@ -206,7 +203,7 @@ private extension QQ {
             code = QQApiInterface.sendReq(toQZone: req)
         }
         if code != .EQQAPISENDSUCESS {
-            finished?(NSError.init(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败(\(code.rawValue))"]))
+            finished?(NSError(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : "分享失败(\(code.rawValue))"]))
         }else {
             self.finished = finished
         }
@@ -219,13 +216,12 @@ private extension QQ {
         return nil
     }
 
-    func validate(image: UIImage, isThumb: Bool = false) -> Error? {
-        let data = image.jpegData(compressionQuality: 1.0)!
+    func validate(image data: Data, isThumb: Bool = false) -> Error? {
         let kb = 1024
         let mb = kb * 1024
         let refer = (isThumb ? mb * 1 : mb * 5)
         guard data.count < refer else {
-            return NSError.init(domain: "Scene", code: 10001, userInfo: [NSLocalizedDescriptionKey : isThumb ? "缩略图太大" : "图片太大"])
+            return NSError(domain: "QQ", code: 10001, userInfo: [NSLocalizedDescriptionKey : isThumb ? "缩略图太大" : "图片太大"])
         }
         return nil
     }

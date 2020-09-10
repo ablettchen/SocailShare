@@ -69,9 +69,10 @@ private extension LandscapeController {
     
     @objc func share(_ sender: UIButton) {
         
-        let image = UIImage(named: "avatar")!
+        let image = UIImage(named: "avatar")
+        let data = image?.jpegData(compressionQuality: 1.0)
         let url = "https://github.com/ablettchen/SocailShare"
-        let web = ResourceWeb(url: url, title: "SocailShare", description: "社会化分享工具", thumb: image)
+        let web = ResourceWeb(url: url, title: "SocailShare", description: "社会化分享工具", thumb: data!)
         
         ShareManager.shared.show(resource: web, isLandscape: true) { (error, scence) in
             guard error == nil else {

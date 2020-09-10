@@ -67,7 +67,6 @@ public class LandscapeShareView: UIView {
         return view;
     }()
     
-    /// 关闭按钮
     private lazy var closeButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = .systemFont(ofSize: 16)

@@ -11,7 +11,7 @@ import Foundation
 
 /// 社会化分享
 public class ShareManager: NSObject {
-
+    
     /// 单例
     public static let shared = ShareManager()
     
@@ -20,10 +20,10 @@ public class ShareManager: NSObject {
     
     /// 平台信息预设
     public var scenes: [Scene] = []
-
+    
     /// 分享
     /// - Parameters:
-    ///   - resource: 资源 ( 类型：String、UIImage、ResourceWeb )
+    ///   - resource: 资源 ( 类型：String、Data、ResourceWeb )
     ///   - type: 场景
     ///   - finished: 完成回调
     public func share(resource: Any, to type: SceneType, finished: ((_ error: Error?) -> Void)?) {
@@ -38,41 +38,41 @@ public class ShareManager: NSObject {
                 case .QZone: QQ.shared.shareText(text, to: .qZone, finished: finished)
                 }
                 
-            case let image as UIImage:
+            case let imageData as Data:
                 
                 switch type {
-                case .wechat: Wechat.shared.shareImage(image, to: .sesson, finished: finished)
-                case .wechatTimeline: Wechat.shared.shareImage(image, to: .timeline, finished: finished)
-                case .QQ: QQ.shared.shareImage(image, to: .qq, finished: finished)
-                case .QZone: QQ.shared.shareImage(image, to: .qZone, finished: finished)
+                case .wechat: Wechat.shared.shareImage(imageData, to: .sesson, finished: finished)
+                case .wechatTimeline: Wechat.shared.shareImage(imageData, to: .timeline, finished: finished)
+                case .QQ: QQ.shared.shareImage(imageData, to: .qq, finished: finished)
+                case .QZone: QQ.shared.shareImage(imageData, to: .qZone, finished: finished)
                 }
-
+                
             case let web as ResourceWeb:
                 
                 switch web.thumb {
-                case let thumbImage as UIImage:
+                case let thumbData as Data:
                     switch type {
-                    case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbImage: thumbImage, to: .sesson, finished: finished)
-                    case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbImage: thumbImage, to: .timeline, finished: finished)
-                    case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbImage: thumbImage, to: .qq, finished: finished)
-                    case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbImage: thumbImage, to: .qZone, finished: finished)
+                    case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .sesson, finished: finished)
+                    case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .timeline, finished: finished)
+                    case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qq, finished: finished)
+                    case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qZone, finished: finished)
                     }
                     
-                case let thumbData as URL:
+                case let thumbURL as URL:
                     switch type {
-                    case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbData, to: .sesson, finished: finished)
-                    case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbData, to: .timeline, finished: finished)
-                    case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbData, to: .qq, finished: finished)
-                    case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbData, to: .qZone, finished: finished)
+                    case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .sesson, finished: finished)
+                    case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .timeline, finished: finished)
+                    case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qq, finished: finished)
+                    case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qZone, finished: finished)
                     }
                     
                 default:
-                    let text = "ResourceWeb.thumb 类型必须为 UIImage 或 URL"
+                    let text = "ResourceWeb.thumb 类型必须为 Data 或 URL"
                     let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
                     finished?(error)
                     break
                 }
-
+                
             default:
                 let text = "\(resource):资源类型不支持"
                 let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
@@ -80,10 +80,10 @@ public class ShareManager: NSObject {
             }
         }
     }
-
+    
     /// 分享弹窗
     /// - Parameters:
-    ///   - resource: 资源 ( 类型：String、UIImage、ResourceWeb )
+    ///   - resource: 资源 ( 类型：String、Data、ResourceWeb )
     ///   - types: 场景
     ///   - finished: 完成回调
     public func show(resource: Any, to types: [SceneType]? = nil, isLandscape: Bool? = false, finished: ((_ error: Error?, _ socail: Scene) -> Void)?) {
@@ -122,7 +122,7 @@ public class ShareManager: NSObject {
         QQ.shared.register(appKey: qqKey, universalLink: qqLink)
         Wechat.shared.register(appKey: wechatKey, universalLink: wechatLink)
     }
-
+    
     public func handle(continue userActivity: NSUserActivity) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             if let url = userActivity.webpageURL {

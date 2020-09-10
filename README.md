@@ -19,7 +19,7 @@ ShareManager.shared.register(qqKey: qqKey, qqLink: qqlink, wechatKey: wechatKey,
 #### 2、分享事件
 
 ```swift
-ShareManager.shared.share(resource: "hello", type: .wechat) { (error) in
+ShareManager.shared.share(resource: "hello", to: .wechat) { (error) in
     guard error == nil else {
         UIApplication.shared.keyWindow!.showToast("\(error?.localizedDescription ?? "分享失败")")
         return
@@ -31,9 +31,10 @@ ShareManager.shared.share(resource: "hello", type: .wechat) { (error) in
 #### 3、分享弹窗
 
 ```swift
-let image = UIImage(named: "avatar")!
+let image = UIImage(named: "avatar")
+let data = image?.jpegData(compressionQuality: 1.0)
 let url = "https://github.com/ablettchen/SocailShare"
-let web = ResourceWeb(url: url, title: "SocailShare", description: "社会化分享", thumb: image)
+let web = ResourceWeb(url: url, title: "SocailShare", description: "社会化分享", thumb: data!)
 
 ShareManager.shared.show(resource: web) { (error, scence) in
     guard error == nil else {
