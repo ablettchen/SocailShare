@@ -16,7 +16,7 @@ public class ShareManager: NSObject {
     public static let shared = ShareManager()
     
     /// 是否只已安装可见
-    public var isInstalledEnable = false
+    public var isInstalledEnable = true
     
     /// 平台信息预设
     public var scenes: [Scene] = []
@@ -36,6 +36,7 @@ public class ShareManager: NSObject {
                 case .wechatTimeline: Wechat.shared.shareText(text, to: .timeline, finished: finished)
                 case .QQ: QQ.shared.shareText(text, to: .qq, finished: finished)
                 case .QZone: QQ.shared.shareText(text, to: .qZone, finished: finished)
+                case .Copy: ShareManager.pasteboard(text, finished: finished)
                 }
                 
             case let imageData as Data:
@@ -45,6 +46,11 @@ public class ShareManager: NSObject {
                 case .wechatTimeline: Wechat.shared.shareImage(imageData, to: .timeline, finished: finished)
                 case .QQ: QQ.shared.shareImage(imageData, to: .qq, finished: finished)
                 case .QZone: QQ.shared.shareImage(imageData, to: .qZone, finished: finished)
+                case .Copy:
+                    let text = "图片二进制数据无法复制"
+                    let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
+                    finished?(error)
+                    break
                 }
                 
             case let web as ResourceWeb:
@@ -56,6 +62,7 @@ public class ShareManager: NSObject {
                     case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .timeline, finished: finished)
                     case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qq, finished: finished)
                     case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qZone, finished: finished)
+                    case .Copy: ShareManager.pasteboard(web.url, finished: finished)
                     }
                     
                 case let thumbURL as URL:
@@ -64,6 +71,7 @@ public class ShareManager: NSObject {
                     case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .timeline, finished: finished)
                     case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qq, finished: finished)
                     case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qZone, finished: finished)
+                    case .Copy: ShareManager.pasteboard(web.url, finished: finished)
                     }
                     
                 default:
@@ -87,7 +95,7 @@ public class ShareManager: NSObject {
     ///   - types: 场景
     ///   - finished: 完成回调
     public func show(resource: Any, to types: [SceneType]? = nil, isLandscape: Bool? = false, finished: ((_ error: Error?, _ socail: Scene) -> Void)?) {
-        let scenes = ShareManager.enableValidate(types: types)
+        let scenes = ShareManager.enableValidate(types: types, reource: resource)
         let items = ShareManager.items(scenes: scenes)
         guard isLandscape ?? false else {
             let alert = ShareView()
@@ -147,6 +155,11 @@ public class ShareManager: NSObject {
 
 private extension ShareManager {
     
+    static func pasteboard(_ text: String, finished: ((_ error: Error?) -> Void)?) {
+        UIPasteboard.general.string = text
+        finished?(nil)
+    }
+    
     /// 场景转 UI 展示元素
     /// - Parameter socails: 场景
     /// - Returns: ui 展示元素
@@ -204,12 +217,12 @@ private extension ShareManager {
     /// 场景可用校验
     /// - Parameter types: 场景类型
     /// - Returns: 场景
-    static func enableValidate(types: [SceneType]? = nil) -> [Scene] {
+    static func enableValidate(types: [SceneType]? = nil, reource: Any) -> [Scene] {
         var scenes = ShareManager.scenes(types) ?? ShareManager.shared.scenes
         var instailled: [Scene] = []
         if ShareManager.shared.isInstalledEnable {
             for scene in scenes {
-                if scene.enable() {
+                if scene.enable(reource: reource) {
                     instailled.append(scene)
                 }
             }

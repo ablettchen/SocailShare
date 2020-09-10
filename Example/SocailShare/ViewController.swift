@@ -22,6 +22,7 @@ let wechatNamed = "social_wechat"
 let wechatTlNamed = "social_wechattimeline"
 let qqNamed = "social_qq"
 let qZoneNamed = "social_qzone"
+let copyNamed = "urlaction_copyurl"
 
 class ViewController: UIViewController {
     
@@ -53,6 +54,7 @@ class ViewController: UIViewController {
         ShareManager.shared.scenes.append(Scene(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!))
         ShareManager.shared.scenes.append(Scene(type: .QQ, icon: UIImage(named: qqNamed)!))
         ShareManager.shared.scenes.append(Scene(type: .QZone, icon: UIImage(named: qZoneNamed)!))
+        ShareManager.shared.scenes.append(Scene(type: .Copy, icon: UIImage(named: copyNamed)!))
         ShareManager.shared.register(qqKey: qqKey, qqLink: qqlink, wechatKey: wechatKey, wechatLink: universalLink)
     }
     
@@ -67,7 +69,6 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
 }
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
