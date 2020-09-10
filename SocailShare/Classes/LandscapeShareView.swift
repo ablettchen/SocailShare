@@ -55,9 +55,9 @@ public class LandscapeShareView: UIView {
         layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10);
         
         let view = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: layout)
-        view.showsHorizontalScrollIndicator = false
+        view.showsHorizontalScrollIndicator = true
         view.showsVerticalScrollIndicator = false
-        view.isPagingEnabled = true
+        view.isPagingEnabled = false
         view.register(LandscapeItemCell.self, forCellWithReuseIdentifier: "LandscapeItemCell")
         if #available(iOS 11.0, *) {
             view.contentInsetAdjustmentBehavior = .never
@@ -138,7 +138,7 @@ private extension LandscapeShareView {
         
         backgroundView.addSubview(self)
         self.snp.remakeConstraints { (make) in
-            make.size.equalTo(CGSize(width: 380, height: 305))
+            make.size.equalTo(CGSize(width: 465, height: 305))
             make.center.equalToSuperview()
         }
         
@@ -220,12 +220,11 @@ private extension LandscapeShareView {
 
 extension LandscapeShareView: UIGestureRecognizerDelegate {
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        return touch.view?.isEqual(backgroundView) ?? false || touch.view?.isEqual(effectView) ?? false
+        return touch.view?.isEqual(backgroundView) ?? false || touch.view?.isEqual(effectView) ?? false || touch.view?.isEqual(self) ?? false
     }
 }
 
 extension LandscapeShareView: UICollectionViewDataSource {
-    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return datas.count
     }
