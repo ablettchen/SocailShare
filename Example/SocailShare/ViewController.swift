@@ -53,8 +53,8 @@ class ViewController: UIViewController {
         ShareManager.shared.scenes.append(Scene(type: .wechat, icon: UIImage(named: wechatNamed)!))
         ShareManager.shared.scenes.append(Scene(type: .wechatTimeline, icon: UIImage(named: wechatTlNamed)!))
         ShareManager.shared.scenes.append(Scene(type: .QQ, icon: UIImage(named: qqNamed)!))
-        ShareManager.shared.scenes.append(Scene(type: .QZone, icon: UIImage(named: qZoneNamed)!))
-        ShareManager.shared.scenes.append(Scene(type: .Copy, icon: UIImage(named: copyNamed)!))
+        ShareManager.shared.scenes.append(Scene(type: .qZone, icon: UIImage(named: qZoneNamed)!))
+        ShareManager.shared.scenes.append(Scene(type: .copy, icon: UIImage(named: copyNamed)!))
         ShareManager.shared.register(qqKey: qqKey, qqLink: qqlink, wechatKey: wechatKey, wechatLink: universalLink)
     }
     

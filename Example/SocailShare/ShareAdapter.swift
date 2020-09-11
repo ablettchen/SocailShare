@@ -72,7 +72,7 @@ public class ShareAdapter: NSObject {
     static public func show(image data: Data, to types: [NSInteger], finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
         var ss: [SceneType] = []
         for type in types {
-            if let s = SceneType(rawValue: type) {
+            if let s = SceneType(rawValue: UInt(type)) {
                 ss.append(s)
             }
         }
@@ -101,7 +101,7 @@ public class ShareAdapter: NSObject {
     static public func show(webUrl: String, title: String, description: String, thumbURL: URL, to types: [NSInteger], finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
         var ss: [SceneType] = []
         for type in types {
-            if let s = SceneType(rawValue: type) {
+            if let s = SceneType(rawValue: UInt(type)) {
                 ss.append(s)
             }
         }

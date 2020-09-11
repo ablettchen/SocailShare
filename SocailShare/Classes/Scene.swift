@@ -8,26 +8,25 @@
 
 import UIKit
 
-/// 场景类型
-@objc(SceneType)
-public enum SceneType: Int, CustomStringConvertible {
-    
-    case wechat         = 1
-    case wechatTimeline = 2
-    case QQ             = 4
-    case QZone          = 5
-    case Copy           = 6
-    
-    public var description: String {
-        switch self {
-        case .wechat:           return "微信"
-        case .wechatTimeline:   return "微信朋友圈"
-        case .QQ:               return "QQ"
-        case .QZone:            return "QQ空间"
-        case .Copy:             return "复制链接"
-        }
-    }
-}
+///// 场景类型
+//@objc public enum SceneType: Int, CustomStringConvertible {
+//    
+//    case wechat         = 1
+//    case wechatTimeline = 2
+//    case QQ             = 4
+//    case QZone          = 5
+//    case Copy           = 6
+//    
+//    public var description: String {
+//        switch self {
+//        case .wechat:           return "微信"
+//        case .wechatTimeline:   return "微信朋友圈"
+//        case .QQ:               return "QQ"
+//        case .qZone:            return "QQ空间"
+//        case .copy:             return "复制链接"
+//        }
+//    }
+//}
 
 /// 场景
 public class Scene: NSObject {
@@ -47,15 +46,17 @@ public class Scene: NSObject {
         switch type {
         case .wechat, .wechatTimeline:
             return Wechat.shared.isInstall()
-        case .QQ, .QZone:
+        case .QQ, .qZone:
             return QQ.shared.isInstall()
-        case .Copy:
+        case .copy:
             if let o = reource {
                 if o is ResourceWeb {
                     return true
                 }
             }
             return false
+        @unknown default:
+            fatalError()
         }
     }
 }

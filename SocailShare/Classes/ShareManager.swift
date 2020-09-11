@@ -35,8 +35,8 @@ public class ShareManager: NSObject {
                 case .wechat: Wechat.shared.shareText(text, to: .sesson, finished: finished)
                 case .wechatTimeline: Wechat.shared.shareText(text, to: .timeline, finished: finished)
                 case .QQ: QQ.shared.shareText(text, to: .qq, finished: finished)
-                case .QZone: QQ.shared.shareText(text, to: .qZone, finished: finished)
-                case .Copy: ShareManager.pasteboard(text, finished: finished)
+                case .qZone: QQ.shared.shareText(text, to: .qZone, finished: finished)
+                case .copy: ShareManager.pasteboard(text, finished: finished)
                 }
                 
             case let imageData as Data:
@@ -45,8 +45,8 @@ public class ShareManager: NSObject {
                 case .wechat: Wechat.shared.shareImage(imageData, to: .sesson, finished: finished)
                 case .wechatTimeline: Wechat.shared.shareImage(imageData, to: .timeline, finished: finished)
                 case .QQ: QQ.shared.shareImage(imageData, to: .qq, finished: finished)
-                case .QZone: QQ.shared.shareImage(imageData, to: .qZone, finished: finished)
-                case .Copy:
+                case .qZone: QQ.shared.shareImage(imageData, to: .qZone, finished: finished)
+                case .copy:
                     let text = "图片二进制数据无法复制"
                     let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
                     finished?(error)
@@ -61,8 +61,8 @@ public class ShareManager: NSObject {
                     case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .sesson, finished: finished)
                     case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .timeline, finished: finished)
                     case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qq, finished: finished)
-                    case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qZone, finished: finished)
-                    case .Copy: ShareManager.pasteboard(web.url, finished: finished)
+                    case .qZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qZone, finished: finished)
+                    case .copy: ShareManager.pasteboard(web.url, finished: finished)
                     }
                     
                 case let thumbURL as URL:
@@ -70,8 +70,8 @@ public class ShareManager: NSObject {
                     case .wechat: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .sesson, finished: finished)
                     case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .timeline, finished: finished)
                     case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qq, finished: finished)
-                    case .QZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qZone, finished: finished)
-                    case .Copy: ShareManager.pasteboard(web.url, finished: finished)
+                    case .qZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qZone, finished: finished)
+                    case .copy: ShareManager.pasteboard(web.url, finished: finished)
                     }
                     
                 default:
@@ -166,7 +166,7 @@ private extension ShareManager {
     static func items(scenes: [Scene]) -> [(name: String, icon: UIImage?)] {
         var items: [(name: String, icon: UIImage?)] = []
         for scene in scenes {
-            items.append((scene.type.description, scene.icon))
+            items.append((sceneDescription(scene.type), scene.icon))
         }
         return items
     }
@@ -206,7 +206,7 @@ private extension ShareManager {
     /// - Returns: 场景
     static func presetValidate(type: SceneType, exception: ((_ error: Error) -> Void)?) -> Scene? {
         guard let scene = ShareManager.scene(type) else {
-            let text = "未找到\(type.description)"
+            let text = "未找到\(sceneDescription(type))"
             let error = NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : text])
             exception?(error)
             return nil
