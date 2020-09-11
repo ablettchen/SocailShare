@@ -16,7 +16,7 @@ typedef NS_ENUM(NSUInteger, SceneType) {
     SceneTypeCopy           = 6,
 };
 
-NS_INLINE NSString *sceneDescription(SceneType type) {
+NS_INLINE NSString * _Nonnull sceneDescription(SceneType type) {
     switch (type) {
         case SceneTypeWechat:
             return @"微信";
@@ -28,6 +28,7 @@ NS_INLINE NSString *sceneDescription(SceneType type) {
             return @"QQ空间";
         case SceneTypeCopy:
             return @"复制链接";
+        default: return @"";
     }
 }
 

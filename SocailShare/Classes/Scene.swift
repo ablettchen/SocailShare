@@ -56,7 +56,8 @@ public class Scene: NSObject {
             }
             return false
         @unknown default:
-            fatalError()
+            debugPrint("未知场景")
+            return false
         }
     }
 }

@@ -37,6 +37,7 @@ public class ShareManager: NSObject {
                 case .QQ: QQ.shared.shareText(text, to: .qq, finished: finished)
                 case .qZone: QQ.shared.shareText(text, to: .qZone, finished: finished)
                 case .copy: ShareManager.pasteboard(text, finished: finished)
+                @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
                 }
                 
             case let imageData as Data:
@@ -50,8 +51,9 @@ public class ShareManager: NSObject {
                     let text = "图片二进制数据无法复制"
                     let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
                     finished?(error)
-                    break
+                @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
                 }
+                
                 
             case let web as ResourceWeb:
                 
@@ -63,6 +65,7 @@ public class ShareManager: NSObject {
                     case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qq, finished: finished)
                     case .qZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qZone, finished: finished)
                     case .copy: ShareManager.pasteboard(web.url, finished: finished)
+                    @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
                     }
                     
                 case let thumbURL as URL:
@@ -72,13 +75,13 @@ public class ShareManager: NSObject {
                     case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qq, finished: finished)
                     case .qZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qZone, finished: finished)
                     case .copy: ShareManager.pasteboard(web.url, finished: finished)
+                    @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
                     }
                     
                 default:
                     let text = "ResourceWeb.thumb 类型必须为 Data 或 URL"
                     let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
                     finished?(error)
-                    break
                 }
                 
             default:
