@@ -23,7 +23,7 @@ public class ShareManager: NSObject {
     
     /// 分享
     /// - Parameters:
-    ///   - resource: 资源 ( 类型：String、Data、ResourceWeb )
+    ///   - resource: 资源 ( 类型：String、Data/URL、ResourceWeb )
     ///   - type: 场景
     ///   - finished: 完成回调
     public func share(resource: Any, to type: SceneType, finished: ((_ error: Error?) -> Void)?) {
@@ -43,10 +43,10 @@ public class ShareManager: NSObject {
             case let imageData as Data:
                 
                 switch type {
-                case .wechat: Wechat.shared.shareImage(imageData, to: .sesson, finished: finished)
-                case .wechatTimeline: Wechat.shared.shareImage(imageData, to: .timeline, finished: finished)
-                case .QQ: QQ.shared.shareImage(imageData, to: .qq, finished: finished)
-                case .qZone: QQ.shared.shareImage(imageData, to: .qZone, finished: finished)
+                case .wechat: Wechat.shared.shareImage(data: imageData, to: .sesson, finished: finished)
+                case .wechatTimeline: Wechat.shared.shareImage(data: imageData, to: .timeline, finished: finished)
+                case .QQ: QQ.shared.shareImage(data: imageData, to: .qq, finished: finished)
+                case .qZone: QQ.shared.shareImage(data: imageData, to: .qZone, finished: finished)
                 case .copy:
                     let text = "图片二进制数据无法复制"
                     let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
@@ -54,6 +54,19 @@ public class ShareManager: NSObject {
                 @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
                 }
                 
+            case let imageURL as URL:
+                
+                switch type {
+                case .wechat: Wechat.shared.shareImage(url: imageURL, to: .sesson, finished: finished)
+                case .wechatTimeline: Wechat.shared.shareImage(url: imageURL, to: .timeline, finished: finished)
+                case .QQ: QQ.shared.shareImage(url: imageURL, to: .qq, finished: finished)
+                case .qZone: QQ.shared.shareImage(url: imageURL, to: .qZone, finished: finished)
+                case .copy:
+                    let text = "图片二进制数据无法复制"
+                    let error = NSError(domain: "ShareManager", code: 10001, userInfo: [NSLocalizedDescriptionKey : text])
+                    finished?(error)
+                @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
+                }
                 
             case let web as ResourceWeb:
                 
@@ -94,7 +107,7 @@ public class ShareManager: NSObject {
     
     /// 分享弹窗
     /// - Parameters:
-    ///   - resource: 资源 ( 类型：String、Data、ResourceWeb )
+    ///   - resource: 资源 ( 类型：String、Data/URL、ResourceWeb )
     ///   - types: 场景
     ///   - finished: 完成回调
     public func show(resource: Any, to types: [SceneType]? = nil, isLandscape: Bool? = false, finished: ((_ error: Error?, _ socail: Scene) -> Void)?) {
@@ -144,7 +157,7 @@ public class ShareManager: NSObject {
                 }
             }
         }
-        return true
+        return false
     } 
     
     public func handle(open url: URL) -> Bool {

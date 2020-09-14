@@ -66,7 +66,7 @@ public class Wechat: NSObject {
     ///   - data: 图片
     ///   - scene: 场景
     ///   - finished: 完成回调
-    public func shareImage(_ data: Data, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
+    public func shareImage(data: Data, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
         
         if let error = prepare() {
             finished?(error)
@@ -96,6 +96,25 @@ public class Wechat: NSObject {
             }
             self?.finished = finished
         }        
+    }
+    
+    /// 分享图片
+    /// - Parameters:
+    ///   - url: 图片
+    ///   - scene: 场景
+    ///   - finished: 完成回调
+    public func shareImage(url: URL, to scene: WechatScene, finished: ((_ error: Error?) -> Void)?) {
+        let loading = ATLoadView(text: "处理中...")
+        loading.show()
+        SDWebImageDownloader.shared.downloadImage(with: url) { [weak self] (image, data, error, fi) in
+            loading.hide()
+            guard error == nil, let imageData = data else {
+                let error = NSError(domain: "Wechat", code: 10000, userInfo: [NSLocalizedDescriptionKey : error?.localizedDescription ?? "图片获取失败"])
+                finished?(error)
+                return
+            }
+            self?.shareImage(data: imageData, to: scene, finished: finished)
+        }
     }
     
     /// 分享链接
@@ -138,7 +157,7 @@ extension Wechat {
         if wechatShare {
             return WXApi.handleOpenUniversalLink(userActivity, delegate: self)
         }
-        return true
+        return false
     }
     
     public func handle(open url: URL) -> Bool {
@@ -146,7 +165,7 @@ extension Wechat {
         if wechatShare {
             return WXApi.handleOpen(url, delegate: self)
         }
-        return true
+        return false
     }
     
     public func isInstall() -> Bool {
@@ -194,7 +213,7 @@ private extension Wechat {
             
         case let thumbUrl as URL:
             
-            let loading = ATLoadView(text: "加载中...")
+            let loading = ATLoadView(text: "处理中...")
             loading.show()
             SDWebImageDownloader.shared.downloadImage(with: thumbUrl) { (image, data, error, fi) in
                 loading.hide()

@@ -23,8 +23,19 @@ public class ShareAdapter: NSObject {
     }
     
     @objc
-    static public func shareImage(_ data: Data, to type: SceneType, finished: @escaping((_ success: Bool, _ errorMessage: String) -> Void)) {
+    static public func shareImage(data: Data, to type: SceneType, finished: @escaping((_ success: Bool, _ errorMessage: String) -> Void)) {
         ShareManager.shared.share(resource: data, to: type) { (error) in
+            guard error == nil else {
+                finished(false, error?.localizedDescription ?? "分享失败")
+                return
+            }
+            finished(true, "")
+        }
+    }
+    
+    @objc
+    static public func shareImage(url: URL, to type: SceneType, finished: @escaping((_ success: Bool, _ errorMessage: String) -> Void)) {
+        ShareManager.shared.share(resource: url, to: type) { (error) in
             guard error == nil else {
                 finished(false, error?.localizedDescription ?? "分享失败")
                 return

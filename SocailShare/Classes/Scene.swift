@@ -10,13 +10,13 @@ import UIKit
 
 ///// 场景类型
 //@objc public enum SceneType: Int, CustomStringConvertible {
-//    
+//
 //    case wechat         = 1
 //    case wechatTimeline = 2
 //    case QQ             = 4
 //    case QZone          = 5
 //    case Copy           = 6
-//    
+//
 //    public var description: String {
 //        switch self {
 //        case .wechat:           return "微信"
@@ -32,11 +32,14 @@ import UIKit
 public class Scene: NSObject {
     
     /// 场景类型
+    @objc
     public var type: SceneType
     
     /// 图标
+    @objc
     public var icon: UIImage
     
+    @objc
     public init(type: SceneType, icon: UIImage) {
         self.type = type
         self.icon = icon
