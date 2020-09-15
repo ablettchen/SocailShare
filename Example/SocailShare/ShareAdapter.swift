@@ -69,8 +69,8 @@ public class ShareAdapter: NSObject {
     }
     
     @objc
-    static public func show(image data: Data, finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
-        ShareManager.shared.show(resource: data) { (error, scene) in
+    static public func show(imageData: Data, finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
+        ShareManager.shared.show(resource: imageData) { (error, scene) in
             guard error == nil else {
                 finished(false, error?.localizedDescription ?? "分享失败", scene)
                 return
@@ -80,14 +80,42 @@ public class ShareAdapter: NSObject {
     }
     
     @objc
-    static public func show(image data: Data, to types: [NSInteger], finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
+    static public func show(imageURL: URL, finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
+        ShareManager.shared.show(resource: imageURL) { (error, scene) in
+            guard error == nil else {
+                finished(false, error?.localizedDescription ?? "分享失败", scene)
+                return
+            }
+            finished(true, "", scene)
+        }
+    }
+    
+    @objc
+    static public func show(imageData: Data, to types: [NSInteger], finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
         var ss: [SceneType] = []
         for type in types {
             if let s = SceneType(rawValue: UInt(type)) {
                 ss.append(s)
             }
         }
-        ShareManager.shared.show(resource: data, to: ss) { (error, scene) in
+        ShareManager.shared.show(resource: imageData, to: ss) { (error, scene) in
+            guard error == nil else {
+                finished(false, error?.localizedDescription ?? "分享失败", scene)
+                return
+            }
+            finished(true, "", scene)
+        }
+    }
+    
+    @objc
+    static public func show(imageURL: URL, to types: [NSInteger], finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
+        var ss: [SceneType] = []
+        for type in types {
+            if let s = SceneType(rawValue: UInt(type)) {
+                ss.append(s)
+            }
+        }
+        ShareManager.shared.show(resource: imageURL, to: ss) { (error, scene) in
             guard error == nil else {
                 finished(false, error?.localizedDescription ?? "分享失败", scene)
                 return
@@ -100,6 +128,36 @@ public class ShareAdapter: NSObject {
     static public func show(webUrl: String, title: String, description: String, thumbData: Data, finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
         let web = ResourceWeb(url: webUrl, title: title, description: description, thumb: thumbData)
         ShareManager.shared.show(resource: web) { (error, scene) in
+            guard error == nil else {
+                finished(false, error?.localizedDescription ?? "分享失败", scene)
+                return
+            }
+            finished(true, "", scene)
+        }
+    }
+    
+    @objc
+    static public func show(webUrl: String, title: String, description: String, thumbURL: URL, finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
+        let web = ResourceWeb(url: webUrl, title: title, description: description, thumb: thumbURL)
+        ShareManager.shared.show(resource: web) { (error, scene) in
+            guard error == nil else {
+                finished(false, error?.localizedDescription ?? "分享失败", scene)
+                return
+            }
+            finished(true, "", scene)
+        }
+    }
+    
+    @objc
+    static public func show(webUrl: String, title: String, description: String, thumbData: Data, to types: [NSInteger], finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
+        var ss: [SceneType] = []
+        for type in types {
+            if let s = SceneType(rawValue: UInt(type)) {
+                ss.append(s)
+            }
+        }
+        let web = ResourceWeb(url: webUrl, title: title, description: description, thumb: thumbData)
+        ShareManager.shared.show(resource: web, to: ss) { (error, scene) in
             guard error == nil else {
                 finished(false, error?.localizedDescription ?? "分享失败", scene)
                 return
