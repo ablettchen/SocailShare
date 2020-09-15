@@ -95,7 +95,7 @@ public class Wechat: NSObject {
                 return
             }
             self?.finished = finished
-        }        
+        }
     }
     
     /// 分享图片
@@ -183,7 +183,12 @@ private extension Wechat {
             return
         }
 
-        let prosess: ((_ url: String, _ title: String, _ description: String, _ thumb: Data, _ scene: WechatScene, _ finished: ((_ error: Error?) -> Void)?) -> Void) = { (url, title, description, thumb, scene, finished) in
+        let prosess: ((_ url: String, _ title: String, _ description: String, _ thumb: Data, _ scene: WechatScene, _ finished: ((_ error: Error?) -> Void)?) -> Void) = { [weak self] (url, title, description, thumb, scene, finished) in
+            
+            if let error = self?.validate(image: thumb, isThumb: true) {
+                finished?(error)
+                return
+            }
 
             let webObjc = WXWebpageObject()
             webObjc.webpageUrl = url
@@ -247,7 +252,7 @@ private extension Wechat {
             return NSError(domain: "Wechat", code: 10001, userInfo: [NSLocalizedDescriptionKey : isThumb ? "缩略图太大" : "图片太大"])
         }
         return nil
-    }   
+    }
 }
 
 
