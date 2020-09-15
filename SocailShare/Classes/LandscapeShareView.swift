@@ -142,58 +142,22 @@ private extension LandscapeShareView {
             make.center.equalToSuperview()
         }
         
-        addSubview(titleLabel)
-        titleLabel.snp.remakeConstraints { (make) in
-            make.left.right.equalToSuperview().inset(22)
-            make.top.equalToSuperview().offset(25)
-            make.height.equalTo(40)
-        }
-        titleLabel.text = "分享到"
-        
-        let topLine = UIView()
-        topLine.alpha = 0.0
-        topLine.backgroundColor = UIColor(hexString: "#eeeeee")
-        addSubview(topLine)
-        topLine.snp.makeConstraints { (make) in
-            make.top.equalTo(titleLabel.snp.bottom).offset(13)
-            make.left.right.equalToSuperview()
-            make.height.equalTo(0.5)
-        }
-        
-        let unSafeArea = UIView()
-        unSafeArea.alpha = 0.0
-        unSafeArea.backgroundColor = .white
-        addSubview(unSafeArea)
-        unSafeArea.snp.makeConstraints { (make) in
-            make.left.bottom.right.equalToSuperview()
-            make.height.equalTo(0.01)
-        }
-        
-        addSubview(closeButton)
-        closeButton.snp.remakeConstraints { (make) in
-            make.bottom.equalTo(unSafeArea.snp.top)
-            make.left.right.equalToSuperview()
-            make.height.equalTo(80)
-        }
-        
-        let botLine = UIView()
-        botLine.alpha = 0.0
-        botLine.backgroundColor = UIColor(hexString: "#eeeeee")
-        addSubview(botLine)
-        botLine.snp.makeConstraints { (make) in
-            make.bottom.equalTo(closeButton.snp.top)
-            make.left.right.equalToSuperview()
-            make.height.equalTo(0.5)
-        }
-        
         addSubview(collectionView)
         collectionView.snp.makeConstraints { (make) in
-            make.top.equalTo(topLine.snp.bottom)
-            make.bottom.equalTo(botLine.snp.top)
+            make.height.equalTo(146)
             make.left.right.equalToSuperview()
+            make.centerY.equalToSuperview()
         }
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        addSubview(titleLabel)
+        titleLabel.snp.remakeConstraints { (make) in
+            make.left.right.equalToSuperview().inset(22)
+            make.bottom.equalTo(collectionView.snp.top).offset(-25)
+            make.height.equalTo(18)
+        }
+        titleLabel.text = "分享到"
         
         self.superview?.layoutIfNeeded()
         bringSubviewToFront(view)

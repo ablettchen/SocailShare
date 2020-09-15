@@ -265,7 +265,6 @@ extension QQ: QQApiInterfaceDelegate {
     public func onResp(_ resp: QQBaseResp!) {
         switch resp.type {
         case 2:
-            
             guard resp.result == "0" else {
                 let text = resp.errorDescription ?? "分享失败"
                 let error = NSError(domain: "QQ", code: 10000, userInfo: [NSLocalizedDescriptionKey : "\(text)"])

@@ -83,11 +83,16 @@ public class ShareView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    private let topInset: CGFloat = 15
+    private var contentHeight: CGFloat = 140
+    private let buttonHeight: CGFloat = 50
 }
 
 private extension ShareView {
     
     func prepare() {
+        backgroundColor = .white
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapAction(_:)))
         tap.cancelsTouchesInView = false
         tap.delegate = self
@@ -119,8 +124,13 @@ private extension ShareView {
     }
     
     func show(in view: UIView, completion: ((Bool) -> Void)?) -> Void {
-        
+
         if self.superview != nil {return}
+        
+        if UIDevice.current.isiPhone5() {
+            contentHeight = 120
+        }
+        
         view.addSubview(backgroundView)
         backgroundView.snp.remakeConstraints { (make) in
             make.edges.equalTo(view)
@@ -129,7 +139,7 @@ private extension ShareView {
         backgroundView.addSubview(self)
         self.snp.remakeConstraints { (make) in
             make.width.equalToSuperview()
-            make.height.equalTo(54 + 120 + 54 + (UIDevice.current.isiPhoneX() ? 34 : 0))
+            make.height.equalTo(topInset + contentHeight + buttonHeight + (UIDevice.current.isiPhoneX() ? 34 : 0))
             make.top.equalTo(backgroundView.snp.bottom)
         }
         self.superview?.layoutIfNeeded()
@@ -138,28 +148,6 @@ private extension ShareView {
             CGSize(width: 15, height: 15),
             UIRectCorner(rawValue: (UIRectCorner.topLeft.rawValue) | (UIRectCorner.topRight.rawValue))
         )
-        
-        addSubview(effectView)
-        effectView.snp.remakeConstraints { (make) in
-            make.edges.equalToSuperview()
-        }
-        
-        addSubview(titleLabel)
-        titleLabel.snp.remakeConstraints { (make) in
-            make.left.right.equalToSuperview().inset(22)
-            make.top.equalToSuperview().offset(25)
-            make.height.equalTo(16)
-        }
-        titleLabel.text = "分享到"
-        
-        let topLine = UIView()
-        topLine.backgroundColor = UIColor(hexString: "#eeeeee")
-        addSubview(topLine)
-        topLine.snp.makeConstraints { (make) in
-            make.top.equalTo(titleLabel.snp.bottom).offset(13)
-            make.left.right.equalToSuperview()
-            make.height.equalTo(0.5)
-        }
         
         let unSafeArea = UIView()
         unSafeArea.backgroundColor = .white
@@ -173,7 +161,7 @@ private extension ShareView {
         closeButton.snp.remakeConstraints { (make) in
             make.bottom.equalTo(unSafeArea.snp.top)
             make.left.right.equalToSuperview()
-            make.height.equalTo(54)
+            make.height.equalTo(buttonHeight)
         }
         
         let botLine = UIView()
@@ -187,9 +175,9 @@ private extension ShareView {
         
         addSubview(collectionView)
         collectionView.snp.makeConstraints { (make) in
-            make.top.equalTo(topLine.snp.bottom)
             make.bottom.equalTo(botLine.snp.top)
             make.left.right.equalToSuperview()
+            make.height.equalTo(contentHeight)
         }
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -203,7 +191,7 @@ private extension ShareView {
             self?.backgroundView.alpha = 1.0
             self?.snp.remakeConstraints { (make) in
                 make.width.equalToSuperview()
-                make.height.equalTo(54 + 120 + 54 + (UIDevice.current.isiPhoneX() ? 34 : 0))
+                make.height.equalTo(self!.topInset + self!.contentHeight + self!.buttonHeight + (UIDevice.current.isiPhoneX() ? 34 : 0))
                 make.bottom.equalToSuperview()
             }
             self?.superview?.layoutIfNeeded()
@@ -221,7 +209,7 @@ private extension ShareView {
             self?.backgroundView.alpha = 0.001
             self?.snp.remakeConstraints { (make) in
                 make.width.equalToSuperview()
-                make.height.equalTo(54 + 120 + 54 + (UIDevice.current.isiPhoneX() ? 34 : 0))
+                make.height.equalTo(self!.topInset + self!.contentHeight + self!.buttonHeight + (UIDevice.current.isiPhoneX() ? 34 : 0))
                 make.top.equalTo(self!.backgroundView.snp.bottom)
             }
             self?.superview?.layoutIfNeeded()
@@ -354,6 +342,14 @@ fileprivate extension UIDevice {
     func isiPhoneX() -> Bool {
         let screenHeight = UIScreen.main.nativeBounds.size.height;
         if screenHeight == 2436 || screenHeight == 1792 || screenHeight == 2688 || screenHeight == 1624 {
+            return true
+        }
+        return false
+    }
+    
+    func isiPhone5() -> Bool {
+        let screenHeight = UIScreen.main.nativeBounds.size.height;
+        if screenHeight == 1136 {
             return true
         }
         return false

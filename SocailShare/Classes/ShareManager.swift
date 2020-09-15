@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import ATToast
 
 /// 社会化分享
 public class ShareManager: NSObject {
@@ -16,7 +17,7 @@ public class ShareManager: NSObject {
     public static let shared = ShareManager()
     
     /// 是否只已安装可见
-    public var isInstalledEnable = true
+    public var isInstalledEnable = false
     
     /// 平台信息预设
     public var scenes: [Scene] = []
@@ -36,7 +37,7 @@ public class ShareManager: NSObject {
                 case .wechatTimeline: Wechat.shared.shareText(text, to: .timeline, finished: finished)
                 case .QQ: QQ.shared.shareText(text, to: .qq, finished: finished)
                 case .qZone: QQ.shared.shareText(text, to: .qZone, finished: finished)
-                case .copy: ShareManager.pasteboard(text, finished: finished)
+                case .copy: ShareManager.pasteboard(text, finished: nil)
                 @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
                 }
                 
@@ -77,7 +78,7 @@ public class ShareManager: NSObject {
                     case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .timeline, finished: finished)
                     case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qq, finished: finished)
                     case .qZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbData: thumbData, to: .qZone, finished: finished)
-                    case .copy: ShareManager.pasteboard(web.url, finished: finished)
+                    case .copy: ShareManager.pasteboard(web.url, finished: nil)
                     @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
                     }
                     
@@ -87,7 +88,7 @@ public class ShareManager: NSObject {
                     case .wechatTimeline: Wechat.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .timeline, finished: finished)
                     case .QQ: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qq, finished: finished)
                     case .qZone: QQ.shared.shareWeb(url: web.url, title: web.title, description: web.description, thumbURL: thumbURL, to: .qZone, finished: finished)
-                    case .copy: ShareManager.pasteboard(web.url, finished: finished)
+                    case .copy: ShareManager.pasteboard(web.url, finished: nil)
                     @unknown default: finished?(NSError(domain: "ShareManager", code: 10000, userInfo: [NSLocalizedDescriptionKey : "未找到\(sceneDescription(type))"]))
                     }
                     
@@ -173,6 +174,7 @@ private extension ShareManager {
     
     static func pasteboard(_ text: String, finished: ((_ error: Error?) -> Void)?) {
         UIPasteboard.general.string = text
+        UIApplication.shared.keyWindow!.showToast("复制成功")
         finished?(nil)
     }
     
