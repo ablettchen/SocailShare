@@ -17,7 +17,7 @@ public class ShareManager: NSObject {
     public static let shared = ShareManager()
     
     /// 是否只已安装可见
-    public var isInstalledEnable = false
+    public var isInstalledEnable = true
     
     /// 平台信息预设
     public var scenes: [Scene] = []

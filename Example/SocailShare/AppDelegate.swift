@@ -43,11 +43,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        return ShareManager.shared.handle(open: url)
+        if ShareManager.shared.handle(open: url) {
+            return true
+        }
+        return false
     }
     
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        return ShareManager.shared.handle(continue: userActivity)
+        if ShareManager.shared.handle(continue: userActivity) {
+            return true
+        }
+        return false
     }
     
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {

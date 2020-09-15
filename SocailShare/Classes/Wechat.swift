@@ -152,18 +152,19 @@ extension Wechat {
     }
     
     public func handle(continue userActivity: NSUserActivity) -> Bool {
-        let url = userActivity.webpageURL
-        let wechatShare = url?.host == "platformId=wechat" && url?.scheme == appKey
-        if wechatShare {
-            return WXApi.handleOpenUniversalLink(userActivity, delegate: self)
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            if let url = userActivity.webpageURL {
+                if WXApi.handleOpenUniversalLink(userActivity, delegate: self) {
+                    return true
+                }
+            }
         }
         return false
     }
     
     public func handle(open url: URL) -> Bool {
-        let wechatShare = url.host == "platformId=wechat" && url.scheme == appKey
-        if wechatShare {
-            return WXApi.handleOpen(url, delegate: self)
+        if WXApi.handleOpen(url, delegate: self) {
+            return true
         }
         return false
     }
