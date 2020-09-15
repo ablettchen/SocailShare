@@ -153,7 +153,7 @@ extension Wechat {
     
     public func handle(continue userActivity: NSUserActivity) -> Bool {
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
-            if let url = userActivity.webpageURL {
+            if let _ = userActivity.webpageURL {
                 if WXApi.handleOpenUniversalLink(userActivity, delegate: self) {
                     return true
                 }
