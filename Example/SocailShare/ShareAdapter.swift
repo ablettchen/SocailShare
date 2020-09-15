@@ -137,9 +137,33 @@ public class ShareAdapter: NSObject {
     }
     
     @objc
+    static public func show(webUrl: String, title: String, description: String, thumbData: Data, isLandscape: Bool, finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
+        let web = ResourceWeb(url: webUrl, title: title, description: description, thumb: thumbData)
+        ShareManager.shared.show(resource: web, isLandscape: isLandscape) { (error, scene) in
+            guard error == nil else {
+                finished(false, error?.localizedDescription ?? "分享失败", scene)
+                return
+            }
+            finished(true, "", scene)
+        }
+    }
+
+    @objc
     static public func show(webUrl: String, title: String, description: String, thumbURL: URL, finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
         let web = ResourceWeb(url: webUrl, title: title, description: description, thumb: thumbURL)
         ShareManager.shared.show(resource: web) { (error, scene) in
+            guard error == nil else {
+                finished(false, error?.localizedDescription ?? "分享失败", scene)
+                return
+            }
+            finished(true, "", scene)
+        }
+    }
+    
+    @objc
+    static public func show(webUrl: String, title: String, description: String, thumbURL: URL, isLandscape: Bool, finished: @escaping((_ success: Bool, _ errorMessage: String, _ scene: Scene) -> Void)) {
+        let web = ResourceWeb(url: webUrl, title: title, description: description, thumb: thumbURL)
+        ShareManager.shared.show(resource: web, isLandscape: isLandscape) { (error, scene) in
             guard error == nil else {
                 finished(false, error?.localizedDescription ?? "分享失败", scene)
                 return
