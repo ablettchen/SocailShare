@@ -73,6 +73,11 @@ public class Wechat: NSObject {
             return
         }
         
+        guard let data = compress(image: data) else {
+            finished?(NSError(domain: "Wechat", code: 10001, userInfo: [NSLocalizedDescriptionKey : "图片处理失败"]))
+            return
+        }
+        
         if let error = validate(image: data) {
             finished?(error)
             return
@@ -185,6 +190,11 @@ private extension Wechat {
 
         let prosess: ((_ url: String, _ title: String, _ description: String, _ thumb: Data, _ scene: WechatScene, _ finished: ((_ error: Error?) -> Void)?) -> Void) = { [weak self] (url, title, description, thumb, scene, finished) in
             
+            guard let thumb = self?.compress(image: thumb, isThumb: true) else {
+                finished?(NSError(domain: "Wechat", code: 10001, userInfo: [NSLocalizedDescriptionKey : "图片处理失败"]))
+                return
+            }
+            
             if let error = self?.validate(image: thumb, isThumb: true) {
                 finished?(error)
                 return
@@ -244,17 +254,28 @@ private extension Wechat {
         return nil
     }
     
-    func validate(image data: Data, isThumb: Bool = false) -> Error? {
-        let kb = 1024
-        let mb = kb * 1024
-        let refer = (isThumb ? kb * 64 : mb * 25)
+    func compress(image data: Data, isThumb: Bool = false) -> Data? {
+        let refer: uint = (isThumb ? Wechat.upperlimit().thumb : Wechat.upperlimit().image)
+        guard data.count < refer else {
+            return UIImage(data: data)?.compress(refer: refer)
+        }
+        return data
+    }
+    
+    func validate(image data: Data, isThumb: Bool = false) -> NSError? {
+        let refer: uint = (isThumb ? Wechat.upperlimit().thumb : Wechat.upperlimit().image)
         guard data.count < refer else {
             return NSError(domain: "Wechat", code: 10001, userInfo: [NSLocalizedDescriptionKey : isThumb ? "缩略图太大" : "图片太大"])
         }
         return nil
     }
+    
+    static func upperlimit() -> (image: uint, thumb : uint) {
+        let kb: uint = 1024
+        let mb: uint = kb * 1024
+        return (mb * 25, kb * 64)
+    }
 }
-
 
 extension Wechat: WXApiDelegate {
     
@@ -277,3 +298,4 @@ extension Wechat: WXApiDelegate {
         }
     }
 }
+

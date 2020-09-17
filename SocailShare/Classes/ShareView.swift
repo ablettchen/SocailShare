@@ -319,39 +319,3 @@ class ShareItemCell: UICollectionViewCell {
         }
     }
 }
-
-fileprivate extension UIView {
-    
-    func filletedCorner(_ cornerRadii:CGSize,_ roundingCorners:UIRectCorner)  {
-        let fieldPath = UIBezierPath(roundedRect: bounds, byRoundingCorners: roundingCorners, cornerRadii:cornerRadii)
-        let fieldLayer = CAShapeLayer()
-        fieldLayer.frame = bounds
-        fieldLayer.path = fieldPath.cgPath
-        self.layer.mask = fieldLayer
-    }
-    
-    func removeAllSubviews() {
-        while subviews.count > 0 {
-            subviews.last?.removeFromSuperview()
-        }
-    }
-}
-
-fileprivate extension UIDevice {
-    
-    func isiPhoneX() -> Bool {
-        let screenHeight = UIScreen.main.nativeBounds.size.height;
-        if screenHeight == 2436 || screenHeight == 1792 || screenHeight == 2688 || screenHeight == 1624 {
-            return true
-        }
-        return false
-    }
-    
-    func isiPhone5() -> Bool {
-        let screenHeight = UIScreen.main.nativeBounds.size.height;
-        if screenHeight == 1136 {
-            return true
-        }
-        return false
-    }
-}
