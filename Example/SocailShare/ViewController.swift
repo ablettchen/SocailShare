@@ -112,10 +112,12 @@ extension ViewController {
 
         case 1:
             
-            let image = UIImage(named: "avatar")
-            let data = image?.jpegData(compressionQuality: 1.0)
+//            let image = UIImage(named: "avatar")
+//            let data = image?.jpegData(compressionQuality: 1.0)
+            
+            let thumbURL = URL(string: "https://resource.beilezx.com/upload/a/2017/0914/433019d385e.jpg")!
             let url = "https://github.com/ablettchen/SocailShare"
-            let web = ResourceWeb(url: url, title: "SocailShare", description: "社会化分享", thumb: data!)
+            let web = ResourceWeb(url: url, title: "SocailShare", description: "社会化分享", thumb: thumbURL)
             
             ShareManager.shared.show(resource: web) { (error, scence) in
                 guard error == nil else {
