@@ -408,6 +408,7 @@
 				PRODUCT_NAME = "Best Learning";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
+				VALID_ARCHS = "arm64 arm64e armv7s armv7 x86_64";
 			};
 			name = Debug;
 		};
@@ -426,6 +427,7 @@
 				PRODUCT_NAME = "Best Learning";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
+				VALID_ARCHS = "arm64 arm64e armv7s armv7 x86_64";
 			};
 			name = Release;
 		};
