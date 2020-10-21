@@ -18,7 +18,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		11CA81E4C6093F725A4C9D75 /* Pods_SocailShare_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SocailShare_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1955D64624FF4A070022A27E /* Socails.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Socails.xcconfig; sourceTree = "<group>"; };
 		19A1CA0F2500BFBD0072322A /* ShareAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShareAdapter.swift; sourceTree = "<group>"; };
 		19D9DAC824F8EEE7000F95F3 /* SocailShare_Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SocailShare_Example.entitlements; sourceTree = "<group>"; };
@@ -35,8 +34,6 @@
 		7B0588E2250D10F276C056F7 /* Pods-SocailShare_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocailShare_Example.debug.xcconfig"; path = "Target Support Files/Pods-SocailShare_Example/Pods-SocailShare_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		9F7688FC3DB225C3B62980B2 /* Pods-SocailShare_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocailShare_Example.release.xcconfig"; path = "Target Support Files/Pods-SocailShare_Example/Pods-SocailShare_Example.release.xcconfig"; sourceTree = "<group>"; };
 		AB098FD1EE1B5DDCEF04FEE4 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		C18D5D9A1A27A50EA32D5BA6 /* Pods-SocailShare_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocailShare_Tests.release.xcconfig"; path = "Target Support Files/Pods-SocailShare_Tests/Pods-SocailShare_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		D2A6DFA30FB7A7A0CA9989AE /* Pods-SocailShare_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SocailShare_Tests.debug.xcconfig"; path = "Target Support Files/Pods-SocailShare_Tests/Pods-SocailShare_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		F0FBFA08F7668AC8BBDC7CC9 /* SocailShare.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SocailShare.podspec; path = ../SocailShare.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
@@ -57,8 +54,6 @@
 			children = (
 				7B0588E2250D10F276C056F7 /* Pods-SocailShare_Example.debug.xcconfig */,
 				9F7688FC3DB225C3B62980B2 /* Pods-SocailShare_Example.release.xcconfig */,
-				D2A6DFA30FB7A7A0CA9989AE /* Pods-SocailShare_Tests.debug.xcconfig */,
-				C18D5D9A1A27A50EA32D5BA6 /* Pods-SocailShare_Tests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -122,7 +117,6 @@
 			isa = PBXGroup;
 			children = (
 				654048BC90F4F5196FF0583F /* Pods_SocailShare_Example.framework */,
-				11CA81E4C6093F725A4C9D75 /* Pods_SocailShare_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -408,7 +402,6 @@
 				PRODUCT_NAME = "Best Learning";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
-				VALID_ARCHS = "arm64 arm64e armv7s armv7 x86_64";
 			};
 			name = Debug;
 		};
@@ -427,7 +420,6 @@
 				PRODUCT_NAME = "Best Learning";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
-				VALID_ARCHS = "arm64 arm64e armv7s armv7 x86_64";
 			};
 			name = Release;
 		};
