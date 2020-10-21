@@ -49,11 +49,8 @@ extension UIView {
 extension UIDevice {
     
     func isiPhoneX() -> Bool {
-        let screenHeight = UIScreen.main.nativeBounds.size.height;
-        if screenHeight == 2436 || screenHeight == 1792 || screenHeight == 2688 || screenHeight == 1624 {
-            return true
-        }
-        return false
+        let maxLength = max(UIScreen.main.nativeBounds.size.width, UIScreen.main.nativeBounds.size.height)
+        return maxLength >= 812
     }
     
     func isiPhone5() -> Bool {
