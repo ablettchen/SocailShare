@@ -49,15 +49,27 @@ extension UIView {
 extension UIDevice {
     
     func isiPhoneX() -> Bool {
+        let isiOS11 = systemVersionLessThanOrEqualTo(version: "11")
+        let minHeight = min(UIScreen.main.nativeBounds.size.width, UIScreen.main.nativeBounds.size.height)
         let maxLength = max(UIScreen.main.nativeBounds.size.width, UIScreen.main.nativeBounds.size.height)
-        return maxLength >= 812
+        return isiOS11 && isPhone() && (minHeight >= 375  && maxLength >= 812)
     }
     
     func isiPhone5() -> Bool {
         let screenHeight = UIScreen.main.nativeBounds.size.height;
-        if screenHeight == 1136 {
+        if isPhone() && screenHeight == 1136 {
             return true
         }
         return false
+    }
+    
+    func isPhone() -> Bool {
+        return userInterfaceIdiom == .phone
+    }
+    
+    func systemVersionLessThanOrEqualTo(version: String) -> Bool {
+        let options: NSString.CompareOptions = [.numeric]
+        let value = systemVersion.compare(version, options: options, range: nil, locale: nil)
+        return value != ComparisonResult.orderedDescending
     }
 }
