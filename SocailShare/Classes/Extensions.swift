@@ -50,9 +50,9 @@ extension UIDevice {
     
     func isiPhoneX() -> Bool {
         let isiOS11 = systemVersionGreaterThanOrEqualTo(version: "11.0")
-        let minHeight = min(UIScreen.main.nativeBounds.size.width, UIScreen.main.nativeBounds.size.height)
-        let maxLength = max(UIScreen.main.nativeBounds.size.width, UIScreen.main.nativeBounds.size.height)
-        return isiOS11 && isPhone() && (minHeight >= 375  && maxLength >= 812)
+        let minLength = min(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
+        let maxLength = max(UIScreen.main.bounds.size.width, UIScreen.main.bounds.size.height)
+        return isiOS11 && isPhone() && (minLength >= 375  && maxLength >= 812)
     }
     
     func isiPhone5() -> Bool {
