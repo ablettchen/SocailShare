@@ -55,7 +55,7 @@ public class ShareView: UIView {
         let view = UICollectionView.init(frame: CGRect.zero, collectionViewLayout: layout)
         view.showsHorizontalScrollIndicator = false
         view.showsVerticalScrollIndicator = false
-        view.isPagingEnabled = true
+        view.isPagingEnabled = false
         view.register(ShareItemCell.self, forCellWithReuseIdentifier: "ShareItemCell")
         if #available(iOS 11.0, *) {
             view.contentInsetAdjustmentBehavior = .never
@@ -295,8 +295,8 @@ class ShareItemCell: UICollectionViewCell {
     
     private func prepare() {
         backgroundColor = .clear
-        addSubview(titleLabel)
-        addSubview(iconView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(iconView)
     }
     
     override func layoutSubviews() {
