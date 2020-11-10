@@ -255,8 +255,8 @@ class LandscapeItemCell: UICollectionViewCell {
     private func prepare() {
         backgroundColor = .clear
         
-        addSubview(titleLabel)
-        addSubview(iconView)
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(iconView)
     }
     
     override func layoutSubviews() {
